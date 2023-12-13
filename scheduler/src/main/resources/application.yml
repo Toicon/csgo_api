@@ -1,0 +1,106 @@
+server:
+  port: 8082
+
+portal:
+  scheduler:
+    startup: true
+  app:
+    session:
+      type: REDIS
+      session-key-prefix: SCHEDULER-SESSION
+    exception-code-prefix: 1001
+    i18n:
+      default-locale: zh_CN
+
+management:
+  endpoints:
+    web:
+      base-path: /monitor
+      exposure:
+        #加载所有的端点，默认只加载了info、health
+        #        include: ['info','health','management']
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    #可以关闭指定的端点
+    shutdown:
+      enabled: false
+
+logging:
+  config: classpath:logback.xml
+
+mybatis-plus:
+  mapperLocations: [ "classpath:mybatis/*-mapper.xml" ]
+
+spring:
+  application:
+    name: @artifactId@
+  profiles:
+    active: dev
+  datasource:
+    jpa:
+      auto-generate-ddl: false
+      scan-packages: [ com.csgo.domain ]
+      show-sql: true
+  jackson:
+    serialization:
+      indent_output: true
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+  mvc:
+    throw-exception-if-no-handler-found: true
+  servlet:
+    multipart:
+      max-file-size: '1000MB'
+      max-request-size: '1500MB'
+  cache:
+    type: redis
+    redis:
+      key-prefix: ADMIN-CACHE
+      time-to-live: 60
+
+oss:
+  service:
+    endpoint: oss-cn-shenzhen.aliyuncs.com
+    publicEndpoint: xxxxx.oss-cn-shenzhen.aliyuncs.com
+    accessKeyId: xxxxx
+    accessKeySecret: xxxxx
+    bucket: xxxxx
+    dir: admin
+
+zbt:
+  quicklyBuy: https://app.zbt.com/open/trade/v2/quick-buy?app-key=xxxxx&language=zh_CN
+  searchUrl: https://app.zbt.com/open/product/v2/search?
+  appKey: xxxxx
+  appId: 730
+  apiUrl: https://app.zbt.com
+  orderQuery: https://app.zbt.com/open/order/v2/buy/detail?
+  productFilter: https://app.zbt.com/open/product/v1/filters?
+  steamUrl: https://steamcommunity.com/tradeoffer/
+  steamInfoUrl: https://app.zbt.com/open/user/steam-info?
+  priceUrl: https://app.zbt.com/open/product/price/info?app-key=xxxxx&language=zh_CN
+  steamCheck: https://app.zbt.com/open/user/steam-check/create?app-key=xxxxx&language=zh_CN
+  noticePhone: 0
+
+sms:
+  qcloud:
+    enable: true
+    app-id: 1000000697
+    appkey: xxxxx
+    sms-sign: xxxxx
+    templates:
+      VerificationCode: 0
+      ItemOffline: 0
+      ItemSend: 0
+      GlobalProductUpdate: 0
+    paramsOrders:
+      VerificationCode:
+        - code
+      ItemOffline:
+        - content
+      ItemSend:
+        - content
+      GlobalProductUpdate:
+        - name

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.UserCommissionLogMapper">
+
+    <select id="pageList" resultType="com.csgo.domain.user.UserCommissionLog">
+        SELECT uc.id,uc.add_time addTime,uc.amount,uc.commission_amount commissionAmount,uc.order_num orderNum,
+        uc.commission_user_id commissionUserId,uc.grade,uc.proportion,uc.settlement_time settlementTime,
+        uc.user_id userId,uc.`status`,u.`name`,uu.`name` commissionName
+        FROM user_commission_log uc INNER JOIN `user` u ON u.id = uc.user_id
+        INNER JOIN `user` uu ON uc.commission_user_id = uu.id
+        <where>
+            <if test="keywords != null and keywords != ''">
+                AND (u.name LIKE CONCAT('%',#{keywords},'%') )
+            </if>
+            <if test="start_time != null">
+                AND unix_timestamp(uc.add_time) > #{start_time}
+            </if>
+            <if test="end_time != null">
+                AND #{end_time} > unix_timestamp(uc.add_time)
+            </if>
+        </where>
+        ORDER BY uc.id DESC
+    </select>
+
+
+    <select id="getUserCommissionAmount" resultType="com.csgo.domain.user.UserCommissionLog">
+        SELECT uc.id,
+               uc.add_time           addTime,
+               uc.amount,
+               uc.commission_amount  commissionAmount,
+               uc.order_num          orderNum,
+               uc.commission_user_id commissionUserId,
+               uc.grade,
+               uc.proportion,
+               uc.settlement_time    settlementTime,
+               uc.user_id            userId,
+               uc.`status`
+        FROM user_commission_log uc
+        WHERE commission_user_id = #{userId}
+          AND DATE_FORMAT(uc.settlement_time, '%Y-%m-%d') = #{date}
+          AND `status` = 1
+          AND uc.grade = 1
+    </select>
+
+
+    <update id="updateStatusByDateAndUserId">
+        UPDATE user_commission_log
+        set `status` = 2
+        WHERE commission_user_id = #{userId}
+          AND DATE_FORMAT(settlement_time, '%Y-%m-%d') = #{date}
+          AND `status` = 1
+    </update>
+
+    <update id="updateCommissionUserId">
+        UPDATE user_commission_log
+        set `commission_user_id` = #{commissionUserId}
+        WHERE user_id = #{userId}
+    </update>
+
+
+    <select id="pageListByUser" resultType="com.csgo.domain.user.UserCommissionLog">
+        SELECT COUNT(uc.id) count,SUM(uc.amount) amount,SUM(uc.commission_amount) commissionAmount,
+        uc.grade,uc.proportion,uc.settlement_time settlementTime,uc.`status`
+        FROM user_commission_log uc
+        WHERE commission_user_id = #{userId}
+        GROUP BY uc.settlement_time, uc.grade, uc.proportion, uc.`status`
+        ORDER BY uc.settlement_time DESC
+    </select>
+
+    <select id="getRecommendCommission" resultType="com.csgo.domain.user.UserCommissionLog">
+        SELECT COUNT(uc.id) count, COALESCE(SUM(uc.amount), 0) amount, COALESCE(SUM(uc.commission_amount), 0) commissionAmount
+        FROM user_commission_log uc
+        inner join `user` u on uc.user_id = u.id
+        WHERE uc.commission_user_id = #{userId} and u.flag = 0 and uc.grade = 1
+    </select>
+
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.user.UserPrizePlusMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.prize.SearchUserPrizeDTOCondition"
+            resultType="com.csgo.domain.plus.user.UserPrizeDTO">
+        select
+        a.id,
+        a.user_id,
+        a.gift_id,
+        a.gift_type,
+        a.giftName,
+        a.gift_product_name,
+        a.price,
+        a.ct
+        from user_prize a
+        where
+        a.gift_id > 0
+        <if test="condition.userId != null">
+            and a.user_id = '${condition.userId}'
+        </if>
+        <if test="condition.giftType != null and condition.giftType != ''">
+            and a.gift_type like '%${condition.giftType}%'
+        </if>
+        <if test="condition.giftName != null and condition.giftName != ''">
+            and a.giftName like '%${condition.giftName}%'
+        </if>
+        <if test="condition.giftProductName != null and condition.giftProductName != ''">
+            and a.gift_product_name like '%${condition.giftProductName}%'
+        </if>
+        <if test="condition.priceMin != null">
+            and a.price <![CDATA[>=]]> #{condition.priceMin}
+        </if>
+        <if test="condition.priceMax != null">
+            and a.price <![CDATA[<=]]> #{condition.priceMax}
+        </if>
+        <if test="condition.startDate != null">
+            and a.ct <![CDATA[>=]]> #{condition.startDate}
+        </if>
+        <if test="condition.endDate != null">
+            and a.ct <![CDATA[<=]]> #{condition.endDate}
+        </if>
+        order by a.id desc
+    </select>
+
+    <select id="findByIds" resultType="com.csgo.domain.plus.user.UserPrizeDTO">
+        select a.*,b.img as userImg,g.gift_password as giftPassword,g.name as giftName from user_prize a
+        inner join user b on a.user_id = b.id
+        inner join gift g on a.gift_id = g.id
+        where a.id IN
+        <foreach collection="prizeIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        order by a.ct desc
+    </select>
+
+</mapper>

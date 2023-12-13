@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.UserLuckyHistoryMapper">
+
+
+    <insert id="add" parameterType="com.csgo.domain.user.UserLuckyHistory" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into user_lucky_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userLuckyHistory.luckNumber != null and userLuckyHistory.luckNumber != ''">
+                luck_number,
+            </if>
+            <if test="userLuckyHistory.userId != null">
+                user_id,
+            </if>
+            <if test="userLuckyHistory.probability != null">
+                probability,
+            </if>
+            <if test="userLuckyHistory.luckyId != null">
+                lucky_id,
+            </if>
+            <if test="userLuckyHistory.price != null">
+                price,
+            </if>
+            <if test="userLuckyHistory.randomProductName != null and userLuckyHistory.randomProductName != ''">
+                random_product_name,
+            </if>
+            <if test="userLuckyHistory.randomProductImg != null and userLuckyHistory.randomProductImg != ''">
+                random_product_img,
+            </if>
+            <if test="userLuckyHistory.luckyProductName != null and userLuckyHistory.luckyProductName != ''">
+                lucky_product_name,
+            </if>
+            <if test="userLuckyHistory.luckyProductImg != null and userLuckyHistory.luckyProductImg != ''">
+                lucky_product_img,
+            </if>
+            <if test="userLuckyHistory.randomProductPrice != null">
+                random_product_price,
+            </if>
+            <if test="userLuckyHistory.luckyProductPrice != null">
+                lucky_product_price,
+            </if>
+            <if test="userLuckyHistory.isLucky != null">
+                is_lucky,
+            </if>
+            add_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userLuckyHistory.luckNumber != null and userLuckyHistory.luckNumber != ''">
+                #{userLuckyHistory.luckNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="userLuckyHistory.userId != null">
+                #{userLuckyHistory.userId,jdbcType=INTEGER},
+            </if>
+            <if test="userLuckyHistory.probability != null">
+                #{userLuckyHistory.probability,jdbcType=INTEGER},
+            </if>
+            <if test="userLuckyHistory.luckyId != null">
+                #{userLuckyHistory.luckyId,jdbcType=INTEGER},
+            </if>
+            <if test="userLuckyHistory.price != null">
+                #{userLuckyHistory.price,jdbcType=DECIMAL},
+            </if>
+            <if test="userLuckyHistory.randomProductName != null and userLuckyHistory.randomProductName != ''">
+                #{userLuckyHistory.randomProductName,jdbcType=VARCHAR},
+            </if>
+            <if test="userLuckyHistory.randomProductImg != null and userLuckyHistory.randomProductImg != ''">
+                #{userLuckyHistory.randomProductImg,jdbcType=VARCHAR},
+            </if>
+            <if test="userLuckyHistory.luckyProductName != null and userLuckyHistory.luckyProductName != ''">
+                #{userLuckyHistory.luckyProductName,jdbcType=VARCHAR},
+            </if>
+            <if test="userLuckyHistory.luckyProductImg != null and userLuckyHistory.luckyProductImg != ''">
+                #{userLuckyHistory.luckyProductImg,jdbcType=VARCHAR},
+            </if>
+            <if test="userLuckyHistory.randomProductPrice != null">
+                #{userLuckyHistory.randomProductPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="userLuckyHistory.luckyProductPrice != null">
+                #{userLuckyHistory.luckyProductPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="userLuckyHistory.isLucky != null">
+                #{userLuckyHistory.isLucky,jdbcType=INTEGER},
+            </if>
+            NOW()
+        </trim>
+    </insert>
+
+
+    <select id="pageList" resultType="com.csgo.domain.user.UserLuckyHistory">
+        SELECT uh.id,uh.user_id userId,uh.luck_number luckNumber,uh.lucky_id luckyId,uh.lucky_product_img luckyProductImg,
+        uh.lucky_product_name luckyProductName,uh.lucky_product_price luckyProductPrice,uh.random_product_img randomProductImg,
+        uh.random_product_name randomProductName,uh.random_product_price randomProductPrice,uh.probability,uh.price,uh.is_lucky isLucky,
+        uh.add_time addTime,u.img,u.`name` FROM user_lucky_history uh INNER JOIN `user` u ON uh.user_id = u.id
+        <where>
+            <if test="keywords != null and keywords != ''">
+                AND (uh.luck_number LIKE CONCAT('%',#{keywords},'%') OR u.name LIKE CONCAT('%',#{keywords},'%') )
+            </if>
+            <if test="start_time != null">
+                AND unix_timestamp(uh.add_time) > #{start_time}
+            </if>
+            <if test="end_time != null">
+                AND #{end_time} > unix_timestamp(uh.add_time)
+            </if>
+        </where>
+        ORDER BY uh.id DESC
+    </select>
+
+    <select id="getById" resultType="com.csgo.domain.user.UserLuckyHistory">
+        SELECT uh.id,
+               uh.user_id              userId,
+               uh.luck_number          luckNumber,
+               uh.lucky_id             luckyId,
+               uh.lucky_product_img    luckyProductImg,
+               uh.lucky_product_name   luckyProductName,
+               uh.lucky_product_price  luckyProductPrice,
+               uh.random_product_img   randomProductImg,
+               uh.random_product_name  randomProductName,
+               uh.random_product_price randomProductPrice,
+               uh.probability,
+               uh.price,
+               uh.is_lucky             isLucky,
+               uh.add_time             addTime
+        FROM user_lucky_history uh
+        WHERE uh.id = #{historyId}
+    </select>
+
+    <select id="pageListByUser" resultType="com.csgo.domain.user.UserLuckyHistory">
+        SELECT uh.id,
+               uh.luck_number        luckNumber,
+               uh.lucky_product_img    luckyProductImg,
+               uh.lucky_product_name   luckyProductName,
+               uh.lucky_product_price  luckyProductPrice,
+               uh.random_product_img   randomProductImg,
+               uh.random_product_name  randomProductName,
+               uh.random_product_price randomProductPrice,
+               uh.price,
+               uh.is_lucky           isLucky,
+               uh.add_time           addTime
+        FROM user_lucky_history uh
+        where user_id = #{userId}
+        ORDER BY uh.id DESC
+    </select>
+
+    <select id="getLuckyUserCount" resultType="int">
+        SELECT COUNT(a.user_id)
+        FROM (SELECT user_id FROM user_lucky_history WHERE lucky_id = #{luckyId} GROUP BY user_id) a
+    </select>
+
+    <select id="getLowProbabilityLuckyProduct" resultType="com.csgo.domain.user.UserLuckyHistoryLowProbabilityDTO">
+        SELECT uh.id,
+               uh.lucky_product_id    productId,
+               uh.lucky_product_img    productImg,
+               uh.lucky_product_name   productName,
+               uh.lucky_product_price  productPrice,
+               uh.probability
+        FROM user_lucky_history uh
+        WHERE uh.user_id = #{userId}
+          and uh.is_lucky = 1
+          and uh.add_time >= #{startDate}
+        order by uh.probability asc,uh.lucky_product_price desc limit 1
+    </select>
+
+    <select id="getLowProbabilityUnLuckyProduct" resultType="com.csgo.domain.user.UserLuckyHistoryLowProbabilityDTO">
+        SELECT uh.id,
+               uh.random_product_id    productId,
+               uh.random_product_img   productImg,
+               uh.random_product_name  productName,
+               uh.random_product_price productPrice,
+               uh.probability
+        FROM user_lucky_history uh
+        WHERE uh.user_id = #{userId}
+          and uh.is_lucky = 0
+          and uh.add_time >= #{startDate}
+        order by uh.probability asc,uh.random_product_price desc limit 1
+    </select>
+
+</mapper>

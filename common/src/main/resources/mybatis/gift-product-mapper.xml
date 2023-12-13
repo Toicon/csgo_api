@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.gift.GiftProductPlusMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.shop.SearchShopProductCondition"
+            resultType="com.csgo.domain.plus.shop.ShopGiftProductDTO">
+        select gp.*, s.stock from gift_product gp
+        inner join shop s on gp.id = s.gift_product_id
+        where s.status = 'NORMAL' and s.hidden = 0 and gp.status='NORMAL'
+        <if test="condition.giftProductName != null">
+            and gp.name like '%${condition.giftProductName}%'
+        </if>
+        <if test="condition.min != null">
+            and gp.price <![CDATA[>=]]> #{condition.min}
+        </if>
+        <if test="condition.max != null">
+            and gp.price <![CDATA[<=]]> #{condition.max}
+        </if>
+        <if test="condition.exteriorName != null">
+            and gp.exterior_name = #{condition.exteriorName}
+        </if>
+        <if test="condition.sortType != null">
+            order by gp.price ${condition.sortType}
+        </if>
+    </select>
+
+    <select id="paginationSummary" parameterType="com.csgo.condition.gift.SearchGiftProductDTOCondition"
+            resultType="com.csgo.domain.plus.gift.GiftProductDTO">
+        SELECT g.id,g.`name`,g.`price`,g.`origin_amount` as zbtPrice,g.zbt_stock,g.img,f.box_name,IF(l.`gift_product_id`
+        IS NULL and r.gift_product_id is null ,0,1)AS lucky
+        FROM gift_product g
+        LEFT JOIN (
+        SELECT GROUP_CONCAT(b.`name`)AS box_name,f.`gift_product_id` FROM gift_product_record f
+        INNER JOIN treasure_box_relate r ON r.`gift_id`=f.`gift_id`
+        INNER JOIN treasure_box b ON b.`id`=r.`treasure_box_id`
+        GROUP BY f.`gift_product_id`
+        )f ON f.gift_product_id=g.`id`
+        LEFT JOIN (
+        select l.`gift_product_id` from sys_lucky_product l group by l.`gift_product_id`
+        )l ON g.`id`=l.`gift_product_id`
+        LEFT JOIN (
+        select r.`gift_product_id` from sys_random_product r group by r.`gift_product_id`
+        )r ON g.`id`=r.`gift_product_id`
+        LEFT JOIN (
+        select b.`gift_product_id` from blind_box_product b
+        inner join blind_box bb on bb.id=b.blind_box_id
+        group by b.`gift_product_id`
+        )b ON g.`id`=b.`gift_product_id`
+        where g.status = 'NORMAL'
+        and (f.gift_product_id is not null or l.gift_product_id is not null
+        or r.gift_product_id is not null or b.`gift_product_id` is not null )
+        <if test="condition.type != null and condition.type =='BLIND'">
+            and b.`gift_product_id` is not null
+        </if>
+        <if test="condition.type != null and condition.type =='BOX'">
+            and f.`gift_product_id` is not null
+        </if>
+        <if test="condition.type != null and condition.type =='LUCKY'">
+            and (l.gift_product_id is not null or r.gift_product_id is not null)
+        </if>
+        <if test="condition.giftProductName != null and condition.giftProductName !=''">
+            and g.name like '%${condition.giftProductName}%'
+        </if>
+        GROUP BY g.`id`
+        <choose>
+            <when test="condition.orderStock != null and condition.orderStock !=''">
+                <choose>
+                    <when test="condition.orderStock =='ASC'">
+                        order by g.zbt_stock ASC
+                    </when>
+                    <otherwise>
+                        order by g.zbt_stock desc
+                    </otherwise>
+                </choose>
+            </when>
+            <otherwise>
+                order by g.id desc
+            </otherwise>
+        </choose>
+    </select>
+
+    <!--扫雷玩法根据金额返回最接近商品记录-->
+    <select id="getGiftProductByPrice" resultType="com.csgo.domain.plus.gift.MineGiftProductDTO">
+        select
+             id as giftProductId,
+             `name` as giftProductName,
+             `price` as giftProductPrice,
+             `img` as giftProductImg,
+             `exterior_name` as exteriorName
+        from gift_product
+        WHERE
+        status='NORMAL'
+        AND product_kind=0
+        AND zbt_item_id is not null
+        AND price <![CDATA[ <= ]]> #{price}
+        AND `name` not like '%战痕累累%'
+        AND `name` not like '%纪念品%'
+        AND `name` not like '%印花%'
+        AND `name` not like '%破损不堪%'
+        AND `name` not like '%涂鸦%'
+        AND `name` not like '%布章%'
+        AND `name` not like '%胸章%'
+        AND `name` not like '%胶囊%'
+        AND `name` not like '%武器箱%'
+        AND `name` not like '%纪念包%'
+        ORDER  BY  ABS(#{price}-price)
+        LIMIT 1
+    </select>
+
+    <!--根据指定金额返回最接近商品记录（随机饰品）-->
+    <select id="getRandomGiftProductByPrice" resultType="com.csgo.domain.plus.gift.RandomGiftProductDTO">
+        select
+             id as giftProductId,
+             `name` as giftProductName,
+             `price` as giftProductPrice,
+             `img` as giftProductImg,
+             `exterior_name` as exteriorName
+        from gift_product
+        WHERE
+        status='NORMAL'
+        AND product_kind=0
+        AND zbt_item_id is not null
+        AND price <![CDATA[ <= ]]> #{price}
+        AND `name` not like '%战痕累累%'
+        AND `name` not like '%纪念品%'
+        AND `name` not like '%印花%'
+        AND `name` not like '%破损不堪%'
+        AND `name` not like '%涂鸦%'
+        AND `name` not like '%布章%'
+        AND `name` not like '%胸章%'
+        AND `name` not like '%胶囊%'
+        AND `name` not like '%武器箱%'
+        AND `name` not like '%纪念包%'
+        ORDER  BY  ABS(#{price}-price)
+        LIMIT 1
+    </select>
+
+    <select id="getProductByNearPrice" resultType="com.csgo.modular.product.model.front.ProductSimpleVO">
+        select id              as productId,
+               `name`          as productName,
+               `price`         as productPrice,
+               `img`           as productImg,
+               `exterior_name` as productExteriorName
+        from gift_product
+        WHERE status = 'NORMAL'
+          AND product_kind = 0
+          AND zbt_item_id is not null
+          AND price <![CDATA[ <= ]]> #{price}
+          AND `name` not like '%战痕累累%'
+          AND `name` not like '%纪念品%'
+          AND `name` not like '%印花%'
+          AND `name` not like '%破损不堪%'
+          AND `name` not like '%涂鸦%'
+          AND `name` not like '%布章%'
+          AND `name` not like '%胸章%'
+          AND `name` not like '%胶囊%'
+          AND `name` not like '%武器箱%'
+          AND `name` not like '%纪念包%'
+        ORDER BY ABS(#{price} - price)
+        LIMIT 1
+    </select>
+
+</mapper>

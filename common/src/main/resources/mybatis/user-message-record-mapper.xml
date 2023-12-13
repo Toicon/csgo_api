@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.message.UserMessageRecordMapper">
+
+    <select id="countOpenCount" resultType="com.csgo.domain.report.StatisticsDTO">
+        select
+        date_format(temp.ct, '%Y-%m-%d') as date,
+        temp.deptId,
+        temp.deptName,
+        count(1) as count
+        from
+        (
+        select
+        r.user_id,
+        r.ct,
+        anchor.deptId,
+        anchor.deptName
+        from user_message_record r
+        inner join user u on u.id= r.user_id
+        inner join (
+        select
+        anchor.user_id,
+        dept.id as deptId,
+        dept.dept_name as deptName
+        from
+        admin_user_anchor anchor,
+        admin_user adminUser,
+        sys_dept dept
+        where
+        anchor.admin_user_id = adminUser.id
+        and adminUser.dept_id = dept.id
+        ${dataScope}
+        ) anchor on anchor.user_id = u.parent_id
+        WHERE 1=1 and r.source='开宝箱' and u.flag=0
+        <if test="startDate != null">
+            and r.ct &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND r.ct &lt; #{endDate}
+        </if>
+        union all
+        select
+        r.user_id,
+        r.ct,
+        4 as deptId,
+        '未归属主播' as deptName
+        from user_message_record r
+        inner join user u on u.id= r.user_id
+        WHERE 1=1 and r.source='开宝箱' and u.flag=0
+        <if test="startDate != null">
+            and r.ct &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND r.ct &lt; #{endDate}
+        </if>
+        and not exists (
+        select 1
+        from
+        admin_user_anchor anchor
+        where anchor.user_id = u.parent_id
+        )
+        ) as temp
+        GROUP BY date_format(temp.ct, '%Y-%m-%d'),temp.deptId,temp.deptName
+    </select>
+
+    <select id="countActiveCount" resultType="com.csgo.domain.report.StatisticsDTO">
+        select
+        date_format(temp.ct, '%Y-%m-%d') as date,
+        temp.deptId,
+        temp.deptName,
+        count(temp.user_id) as count
+        from
+        (
+        select
+        r.ct,
+        r.user_id,
+        anchor.deptId,
+        anchor.deptName
+        from user u
+        inner join (
+        select
+        anchor.user_id,
+        dept.id as deptId,
+        dept.dept_name as deptName
+        from
+        admin_user_anchor anchor,
+        admin_user adminUser,
+        sys_dept dept
+        where
+        anchor.admin_user_id = adminUser.id
+        and adminUser.dept_id = dept.id
+        ${dataScope}
+        ) anchor on anchor.user_id = u.parent_id
+        inner join (
+        select max(r.ct)as ct,r.user_id from user_message_record r
+        WHERE 1=1 and r.source='开宝箱'
+        <if test="startDate != null">
+            and r.ct &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND r.ct &lt; #{endDate}
+        </if>
+        group by r.user_id
+        ) r on r.user_id=u.id and u.flag=0
+        union all
+        select
+        r.ct,
+        r.user_id,
+        4 as deptId,
+        '未归属主播' as deptName
+        from user u
+        inner join (
+        select max(r.ct)as ct,r.user_id from user_message_record r
+        WHERE 1=1 and r.source='开宝箱'
+        <if test="startDate != null">
+            and r.ct &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND r.ct &lt; #{endDate}
+        </if>
+        group by r.user_id
+        ) r on r.user_id=u.id and u.flag=0
+        where not exists (
+        select 1
+        from
+        admin_user_anchor anchor
+        where anchor.user_id = u.parent_id
+        )
+        ) as temp
+        GROUP BY date_format(temp.ct, '%Y-%m-%d'),temp.deptId,temp.deptName
+    </select>
+
+    <delete id="deleteBeforeTime">
+        DELETE user_message_record
+        FROM user_message_record
+        LEFT JOIN `user` ON `user_message_record`.`user_id` = `user`.`id`
+        WHERE `user`.`flag`=#{flag} AND `user_message_record`.`ct`<![CDATA[<=]]> #{beforeTime}
+    </delete>
+
+</mapper>

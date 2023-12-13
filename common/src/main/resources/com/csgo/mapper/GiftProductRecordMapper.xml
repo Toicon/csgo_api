@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.GiftProductRecordMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.GiftProductRecord">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="gift_id" property="giftId" jdbcType="INTEGER"/>
+        <result column="gift_product_id" property="giftProductId" jdbcType="INTEGER"/>
+        <result column="within_probability" property="withinProbability" jdbcType="VARCHAR"/>
+        <result column="out_probability" property="outProbability" jdbcType="VARCHAR"/>
+        <result column="isdefault" property="isdefault" jdbcType="VARCHAR"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+        <result column="show_probability" property="show_probability" jdbcType="VARCHAR"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
+        <result column="special_state" property="specialState" jdbcType="BOOLEAN"/>
+        <result column="probability_price" property="probabilityPrice" jdbcType="DECIMAL"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , gift_id, gift_product_id, within_probability, out_probability, isdefault, ct,
+    ut, show_probability,num
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from gift_product_record
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from gift_product_record
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.GiftProductRecord">
+        insert into gift_product_record (id, gift_id, gift_product_id,
+                                         within_probability, out_probability, isdefault,
+                                         ct, ut, show_probability, num)
+        values (#{id,jdbcType=INTEGER}, #{giftId,jdbcType=INTEGER}, #{giftProductId,jdbcType=INTEGER},
+                #{withinProbability,jdbcType=VARCHAR}, #{outProbability,jdbcType=VARCHAR}, #{isdefault,jdbcType=VARCHAR},
+                #{ct,jdbcType=TIMESTAMP}, #{ut,jdbcType=TIMESTAMP}, #{show_probability,jdbcType=VARCHAR},
+                #{num,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.GiftProductRecord">
+        insert into gift_product_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="giftId != null">
+                gift_id,
+            </if>
+            <if test="giftProductId != null">
+                gift_product_id,
+            </if>
+            <if test="withinProbability != null">
+                within_probability,
+            </if>
+            <if test="outProbability != null">
+                out_probability,
+            </if>
+            <if test="isdefault != null">
+                isdefault,
+            </if>
+            <if test="ct != null">
+                ct,
+            </if>
+            <if test="ut != null">
+                ut,
+            </if>
+            <if test="show_probability != null">
+                show_probability,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+            <if test="probabilityPrice != null">
+                probability_price,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="giftId != null">
+                #{giftId,jdbcType=INTEGER},
+            </if>
+            <if test="giftProductId != null">
+                #{giftProductId,jdbcType=INTEGER},
+            </if>
+            <if test="withinProbability != null">
+                #{withinProbability,jdbcType=VARCHAR},
+            </if>
+            <if test="outProbability != null">
+                #{outProbability,jdbcType=VARCHAR},
+            </if>
+            <if test="isdefault != null">
+                #{isdefault,jdbcType=VARCHAR},
+            </if>
+            <if test="ct != null">
+                #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="show_probability != null">
+                #{show_probability,jdbcType=VARCHAR},
+            </if>
+            <if test="num != null">
+                #{num,jdbcType=VARCHAR},
+            </if>
+            <if test="probabilityPrice != null">
+                #{probabilityPrice,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.GiftProductRecord">
+        update gift_product_record
+        <set>
+            <if test="giftId != null">
+                gift_id = #{giftId,jdbcType=INTEGER},
+            </if>
+            <if test="giftProductId != null">
+                gift_product_id = #{giftProductId,jdbcType=INTEGER},
+            </if>
+            <if test="withinProbability != null">
+                within_probability = #{withinProbability,jdbcType=VARCHAR},
+            </if>
+            <if test="outProbability != null">
+                out_probability = #{outProbability,jdbcType=VARCHAR},
+            </if>
+            <if test="weight != null">
+                weight = #{weight,jdbcType=VARCHAR},
+            </if>
+            <if test="isdefault != null">
+                isdefault = #{isdefault,jdbcType=VARCHAR},
+            </if>
+            <if test="ct != null">
+                ct = #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="show_probability != null">
+                show_probability = #{show_probability,jdbcType=VARCHAR},
+            </if>
+            <if test="num != null">
+                num = #{num,jdbcType=VARCHAR},
+            </if>
+            <if test="specialState != null">
+                special_state = #{specialState,jdbcType=BOOLEAN},
+            </if>
+            <if test="probabilityPrice != null">
+                probability_price = #{probabilityPrice,jdbcType=DECIMAL}
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.GiftProductRecord">
+        update gift_product_record
+        set gift_id            = #{giftId,jdbcType=INTEGER},
+            gift_product_id    = #{giftProductId,jdbcType=INTEGER},
+            within_probability = #{withinProbability,jdbcType=VARCHAR},
+            out_probability    = #{outProbability,jdbcType=VARCHAR},
+            isdefault          = #{isdefault,jdbcType=VARCHAR},
+            ct                 = #{ct,jdbcType=TIMESTAMP},
+            ut                 = #{ut,jdbcType=TIMESTAMP},
+            show_probability   = #{show_probability,jdbcType=VARCHAR},
+            num                = #{num,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="getList" resultMap="BaseResultMap" parameterType="com.csgo.domain.GiftProductRecord">
+        select * from gift_product_record
+        <where>
+            1=1
+            <if test="giftId != null">
+                and gift_id = #{giftId,jdbcType=INTEGER}
+            </if>
+            <if test="giftProductId != null">
+                and gift_product_id = #{giftProductId,jdbcType=INTEGER}
+            </if>
+            <if test="withinProbability != null">
+                and within_probability = #{withinProbability,jdbcType=VARCHAR}
+            </if>
+            <if test="outProbability != null">
+                and out_probability = #{outProbability,jdbcType=VARCHAR}
+            </if>
+            <if test="isdefault != null">
+                and isdefault = #{isdefault,jdbcType=VARCHAR}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="show_probability != null">
+                and show_probability = #{show_probability,jdbcType=VARCHAR}
+            </if>
+            <if test="num != null">
+                and num != 0
+            </if>
+
+        </where>
+        order By ct desc
+
+    </select>
+
+
+    <select id="getListLt" resultMap="BaseResultMap" parameterType="com.csgo.domain.GiftProductRecord">
+        select * from gift_product_record
+        <where>
+            1=1
+            <if test="giftId != null">
+                and gift_id = #{giftId,jdbcType=INTEGER}
+            </if>
+            <if test="giftProductId != null">
+                and gift_product_id = #{giftProductId,jdbcType=INTEGER}
+            </if>
+            <if test="withinProbability != null">
+                and within_probability = #{withinProbability,jdbcType=VARCHAR}
+            </if>
+            <if test="outProbability != null">
+                and out_probability = #{outProbability,jdbcType=VARCHAR}
+            </if>
+            <if test="isdefault != null">
+                and isdefault = #{isdefault,jdbcType=VARCHAR}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="show_probability != null">
+                and show_probability = #{show_probability,jdbcType=VARCHAR}
+            </if>
+            <if test="num != null">
+                and num != 0
+            </if>
+        </where>
+        order By ct desc limit #{pageNum},#{pageSize}
+
+    </select>
+
+
+    <select id="getListOrderPrice" resultMap="BaseResultMap" parameterType="com.csgo.domain.GiftProductRecord">
+        select c.* from (select a.*,b.price from gift_product_record a,gift_product b,(select spill_price from
+        exchange_rate where id = 1) d where a.gift_product_id = b.id) c
+        <where>
+            1=1
+            <if test="giftId != null">
+                and c.gift_id = #{giftId,jdbcType=INTEGER}
+            </if>
+            <if test="giftProductId != null">
+                and c.gift_product_id = #{giftProductId,jdbcType=INTEGER}
+            </if>
+            <if test="withinProbability != null">
+                and c.within_probability = #{withinProbability,jdbcType=VARCHAR}
+            </if>
+            <if test="outProbability != null">
+                and c.out_probability = #{outProbability,jdbcType=VARCHAR}
+            </if>
+            <if test="isdefault != null">
+                and c.isdefault = #{isdefault,jdbcType=VARCHAR}
+            </if>
+            <if test="ct != null">
+                and c.ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and c.ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+            <if test="id != null">
+                and c.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="show_probability != null">
+                and c.show_probability = #{show_probability,jdbcType=VARCHAR}
+            </if>
+            <if test="num != null">
+                and num != 0
+            </if>
+        </where>
+        order BY c.price DESC
+    </select>
+
+
+</mapper>

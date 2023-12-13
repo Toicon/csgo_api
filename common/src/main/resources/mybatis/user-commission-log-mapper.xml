@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.user.UserCommissionLogPlusMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.user.SearchUserCommissionLogCondition"
+            resultType="com.csgo.domain.plus.user.UserCommissionLogDTO">
+        select sum(ucl.amount) as amount,
+               COUNT(ucl.id) as count,
+               SUM(ucl.commission_amount) as commission_amount,
+               MAX(ucl.proportion) as proportion,
+               ucl.settlement_time as settlement_time,
+               MAX(ucl.status) as status
+        from user_commission_log ucl
+        inner join `user` u on ucl.user_id = u.id
+        where ucl.commission_user_id = #{condition.userId} and u.flag = 0 and grade = 1
+        group by ucl.commission_user_id, ucl.settlement_time
+        order by ucl.settlement_time desc
+    </select>
+
+    <select id="recommendCommission" resultType="java.math.BigDecimal">
+        select IFNULL(sum(ucl.amount), 0) as amount
+        from user_commission_log ucl
+        inner join `user` u on ucl.user_id = u.id
+        INNER JOIN order_record o on ucl.order_num = o.order_num
+        where
+        ucl.commission_user_id = #{userId}
+        and ucl.grade = 1
+        and u.flag = 0
+        and ucl.add_time<![CDATA[ >= ]]> #{startDate}
+        and ucl.add_time<![CDATA[ <= ]]> #{endDate}
+    </select>
+    <!-- 主播下级散户挂散户，下下级散户充值金额归属到未归属主播 -->
+    <select id="recommendCommissionOther" resultType="java.math.BigDecimal">
+        select IFNULL(sum(ucl.amount), 0) as amount
+        from user_commission_log ucl
+        inner join `user` u on ucl.user_id = u.id
+        where
+        ucl.grade = 1
+        and u.flag = 0
+        and ucl.add_time<![CDATA[ >= ]]> #{startDate}
+        and ucl.add_time<![CDATA[ <= ]]> #{endDate}
+        and not exists (
+            select 1
+            from
+            admin_user_anchor anchor
+            where anchor.user_id = ucl.commission_user_id
+        )
+    </select>
+
+    <select id="getReceiveAmount" resultType="java.math.BigDecimal">
+        SELECT IFNULL(sum(t.commission_amount), 0) FROM user_commission_log t
+        <where>
+            t.user_id=#{userId} and t.status=2
+        </where>
+    </select>
+
+</mapper>

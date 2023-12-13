@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.mine.MineProductMapper">
+
+    <select id="pagination" resultType="com.csgo.domain.MineProductDTO">
+        select
+        b.id,
+        b.create_date,
+        a.csgo_type as type,
+        a.name,
+        a.img,
+        a.price as price
+        from
+        gift_product a,mine_product b
+        <where>
+            a.id= b.gift_product_id
+            and a.status='NORMAL'
+            <if test="keywords!=null and keywords!=''">
+                and a.name like '%${keywords}%'
+            </if>
+            <if test="csgoType!=null and csgoType!=''">
+                and a.csgo_type=#{csgoType}
+            </if>
+        </where>
+        order by b.create_date,b.id desc
+    </select>
+    <!-- 获取随机保底饰品信息 -->
+    <select id="getRandProduct" resultType="com.csgo.domain.plus.mine.MineProduct">
+        select
+         *
+        from
+        mine_product
+        ORDER BY RAND() LIMIT 1
+    </select>
+
+</mapper>

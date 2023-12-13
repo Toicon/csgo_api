@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.message.UserMessageItemRecordMapper">
+
+    <select id="findWithProductByRecordIds" resultType="com.csgo.domain.plus.message.UserMessageItemRecordDTO">
+        select umir.*, gp.img, gp.out_probability from user_message_item_record umir
+        inner join user_message um on umir.user_message_id = um.id
+        inner join gift_product gp on um.gift_product_id = gp.id
+        where umir.record_id in
+        <foreach collection="userMessageRecordIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <delete id="deleteBeforeTime">
+        DELETE `user_message_item_record`
+        FROM `user_message_item_record`
+        LEFT JOIN `user_message_record` ON `user_message_item_record`.`record_id`=`user_message_record`.`id`
+        LEFT JOIN `user` ON `user_message_record`.`user_id` = `user`.`id`
+        WHERE `user`.`flag`=#{flag} AND `user_message_record`.`ct` <![CDATA[<=]]> #{beforeTime}
+    </delete>
+
+</mapper>

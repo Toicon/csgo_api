@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.RollMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.Roll">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="rollname" property="rollname" jdbcType="VARCHAR"/>
+        <result column="roll_type" property="rollType" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="drawdate" property="drawdate" jdbcType="TIMESTAMP"/>
+        <result column="start_time" property="startTime" jdbcType="TIMESTAMP"/>
+        <result column="end_time" property="endTime" jdbcType="TIMESTAMP"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="userlimit" property="userlimit" jdbcType="DECIMAL"/>
+        <result column="anchorlink" property="anchorlink" jdbcType="VARCHAR"/>
+
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
+        <result column="anchoruserid" property="anchoruserid" jdbcType="INTEGER"/>
+        <result column="rollnumber" property="rollnumber" jdbcType="VARCHAR"/>
+
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+
+        <result column="room_switch" property="roomSwitch" jdbcType="BOOLEAN"/>
+
+        <result column="rolldesc" property="rolldesc" jdbcType="VARCHAR"/>
+        <result column="anchordesc" property="anchordesc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , rollname, type, drawdate, password, userlimit, anchorlink, status, ut, ct, num,
+    anchoruserid, rollnumber,img,rolldesc,anchordesc,room_switch,roll_type
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from roll
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByRollUserIdList" resultType="com.csgo.domain.Roll">
+        select b.* from roll_user a,roll b where a.userId = #{id,jdbcType=INTEGER} and a.rollId = b.id
+        <if test="rollname != null">
+            AND b.rollname like '%${rollname}%'
+        </if>
+        <if test="status != null">
+            AND b.status = #{status,jdbcType=VARCHAR}
+        </if>
+        order by b.ct desc LIMIT #{pageNum},#{pageSize}
+    </select>
+
+    <select id="selectByList" resultType="com.csgo.domain.Roll">
+        select * from roll
+        <where>
+            1=1
+            <if test="id != null">
+                AND id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="rollname != null">
+                AND rollname = #{rollname,jdbcType=VARCHAR}
+            </if>
+            <if test="type != null">
+                AND type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="drawdate != null">
+                AND drawdate = #{drawdate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="password != null">
+                AND password = #{password,jdbcType=VARCHAR}
+            </if>
+            <if test="userlimit != null">
+                AND userlimit = #{userlimit,jdbcType=DECIMAL}
+            </if>
+            <if test="anchorlink != null">
+                AND anchorlink = #{anchorlink,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="ut != null">
+                AND ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ct != null">
+                AND ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="num != null">
+                AND num = #{num,jdbcType=INTEGER}
+            </if>
+            <if test="anchoruserid != null">
+                AND anchoruserid = #{anchoruserid,jdbcType=INTEGER}
+            </if>
+            <if test="rollnumber != null">
+                AND rollnumber = #{rollnumber,jdbcType=VARCHAR}
+            </if>
+            <if test="rolldesc != null">
+                AND rolldesc = #{rolldesc,jdbcType=LONGVARCHAR}
+            </if>
+            <if test="anchordesc != null">
+                AND anchordesc = #{anchordesc,jdbcType=LONGVARCHAR}
+            </if>
+            <if test="roomSwitch != null">
+                AND room_switch = #{roomSwitch,jdbcType=BOOLEAN}
+            </if>
+        </where>
+        order by `status` ASC ,sort_id DESC LIMIT #{pageNum},#{pageSize}
+    </select>
+    <select id="selectByRollList" resultType="com.csgo.domain.Roll">
+
+        select * from roll
+        <where>
+            1=1
+            <if test="id != null">
+                AND id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="rollname != null">
+                AND rollname = #{rollname,jdbcType=VARCHAR}
+            </if>
+            <if test="type != null">
+                AND type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="drawdate != null">
+                AND drawdate = #{drawdate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="password != null">
+                AND password = #{password,jdbcType=VARCHAR}
+            </if>
+            <if test="userlimit != null">
+                AND userlimit = #{userlimit,jdbcType=DECIMAL}
+            </if>
+            <if test="anchorlink != null">
+                AND anchorlink = #{anchorlink,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="ut != null">
+                AND ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ct != null">
+                AND ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="roomSwitch != null">
+                AND room_switch = #{roomSwitch,jdbcType=BOOLEAN}
+            </if>
+            <if test="num != null">
+                AND num = #{num,jdbcType=INTEGER}
+            </if>
+            <if test="anchoruserid != null">
+                AND anchoruserid = #{anchoruserid,jdbcType=INTEGER}
+            </if>
+            <if test="rollnumber != null">
+                AND rollnumber = #{rollnumber,jdbcType=VARCHAR}
+            </if>
+            <if test="rolldesc != null">
+                AND rolldesc = #{rolldesc,jdbcType=LONGVARCHAR}
+            </if>
+            <if test="anchordesc != null">
+                AND anchordesc = #{anchordesc,jdbcType=LONGVARCHAR}
+            </if>
+        </where>
+        order by ct desc
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from roll
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.Roll" useGeneratedKeys="true" keyProperty="id">
+        insert into roll (id, rollname, type,
+                          drawdate, password, userlimit,
+                          anchorlink, status, ut,
+                          ct, num, anchoruserid,
+                          rollnumber, img, rolldesc, anchordesc)
+        values (#{id,jdbcType=INTEGER}, #{rollname,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+                #{drawdate,jdbcType=TIMESTAMP}, #{password,jdbcType=VARCHAR}, #{userlimit,jdbcType=DECIMAL},
+                #{anchorlink,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{ut,jdbcType=TIMESTAMP},
+                #{ct,jdbcType=TIMESTAMP}, #{num,jdbcType=INTEGER}, #{anchoruserid,jdbcType=INTEGER},
+                #{rollnumber,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR},
+                #{rolldesc,jdbcType=VARCHAR},
+                #{anchordesc,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.Roll">
+        insert into roll
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="rollname != null">
+                rollname,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="drawdate != null">
+                drawdate,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="userlimit != null">
+                userlimit,
+            </if>
+            <if test="anchorlink != null">
+                anchorlink,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="ut != null">
+                ut,
+            </if>
+            <if test="ct != null">
+                ct,
+            </if>
+            <if test="num != null">
+                num,
+            </if>
+            <if test="anchoruserid != null">
+                anchoruserid,
+            </if>
+            <if test="rollnumber != null">
+                rollnumber,
+            </if>
+            <if test="rolldesc != null">
+                rolldesc,
+            </if>
+            <if test="anchordesc != null">
+                anchordesc,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="rollname != null">
+                #{rollname,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="drawdate != null">
+                #{drawdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="userlimit != null">
+                #{userlimit,jdbcType=DECIMAL},
+            </if>
+            <if test="anchorlink != null">
+                #{anchorlink,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="ut != null">
+                #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ct != null">
+                #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="num != null">
+                #{num,jdbcType=INTEGER},
+            </if>
+            <if test="anchoruserid != null">
+                #{anchoruserid,jdbcType=INTEGER},
+            </if>
+            <if test="rollnumber != null">
+                #{rollnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="rolldesc != null">
+                #{rolldesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="anchordesc != null">
+                #{anchordesc,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.Roll">
+        update roll
+        <set>
+            <if test="rollname != null">
+                rollname = #{rollname,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="drawdate != null">
+                drawdate = #{drawdate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="userlimit != null">
+                userlimit = #{userlimit,jdbcType=DECIMAL},
+            </if>
+            <if test="anchorlink != null">
+                anchorlink = #{anchorlink,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="ut != null">
+                ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ct != null">
+                ct = #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="num != null">
+                num = #{num,jdbcType=INTEGER},
+            </if>
+            <if test="anchoruserid != null">
+                anchoruserid = #{anchoruserid,jdbcType=INTEGER},
+            </if>
+            <if test="rollnumber != null">
+                rollnumber = #{rollnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="rolldesc != null">
+                rolldesc = #{rolldesc,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="anchordesc != null">
+                anchordesc = #{anchordesc,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.Roll">
+        update roll
+        set rollname     = #{rollname,jdbcType=VARCHAR},
+            type         = #{type,jdbcType=VARCHAR},
+            drawdate     = #{drawdate,jdbcType=TIMESTAMP},
+            password     = #{password,jdbcType=VARCHAR},
+            userlimit    = #{userlimit,jdbcType=DECIMAL},
+            anchorlink   = #{anchorlink,jdbcType=VARCHAR},
+            status       = #{status,jdbcType=VARCHAR},
+            ut           = #{ut,jdbcType=TIMESTAMP},
+            ct           = #{ct,jdbcType=TIMESTAMP},
+            num          = #{num,jdbcType=INTEGER},
+
+            img          = #{img,jdbcType=VARCHAR},
+
+            anchoruserid = #{anchoruserid,jdbcType=INTEGER},
+            rollnumber   = #{rollnumber,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+</mapper>

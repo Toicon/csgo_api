@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.RollGiftMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.RollGift">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="giftProductId" property="giftProductId" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="productname" property="productname" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="VARCHAR"/>
+        <result column="rollId" property="rollid" jdbcType="INTEGER"/>
+
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , giftProductId, price, productname, img, grade, rollId,ut,ct
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from roll_gift
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="selectByList" resultType="com.csgo.domain.RollGift">
+        select * from roll_gift
+        <where>
+            1=1
+            <if test="giftProductId != null">
+                AND giftProductId = #{giftProductId,jdbcType=INTEGER}
+            </if>
+            <if test="price != null">
+                AND price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="productname != null">
+                AND productname = #{productname,jdbcType=VARCHAR}
+            </if>
+            <if test="img != null">
+                AND img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="grade != null">
+                AND grade = #{grade,jdbcType=VARCHAR}
+            </if>
+            <if test="rollid != null">
+                AND rollId = #{rollid,jdbcType=INTEGER}
+            </if>
+
+            <if test="ut != null">
+                AND ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="ct != null">
+                AND ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+
+        </where>
+        order by price desc,ct desc LIMIT #{pageNum},#{pageSize}
+
+    </select>
+    <select id="selectByGiftProductList" resultType="com.csgo.domain.RollGift">
+
+        select * from roll_gift
+        <where>
+            1=1
+            <if test="giftProductId != null">
+                AND giftProductId = #{giftProductId,jdbcType=INTEGER}
+            </if>
+            <if test="price != null">
+                AND price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="productname != null">
+                AND productname = #{productname,jdbcType=VARCHAR}
+            </if>
+            <if test="img != null">
+                AND img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="grade != null">
+                AND grade = #{grade,jdbcType=VARCHAR}
+            </if>
+            <if test="rollid != null">
+                AND rollId = #{rollid,jdbcType=INTEGER}
+            </if>
+
+            <if test="ut != null">
+                AND ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="ct != null">
+                AND ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+
+        </where>
+        order by price desc,ct desc
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from roll_gift
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.RollGift" useGeneratedKeys="true" keyProperty="id">
+        insert into roll_gift (id, giftProductId, price,
+                               productname, img, grade, rollId, ct)
+        values (#{id,jdbcType=INTEGER}, #{giftProductId,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL},
+                #{productname,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR},
+                #{rollid,jdbcType=INTEGER}, #{ct,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.RollGift">
+        insert into roll_gift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="giftProductId != null">
+                giftProductId,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="productname != null">
+                productname,
+            </if>
+            <if test="img != null">
+                img,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="rollid != null">
+                rollId,
+            </if>
+
+            <if test="ut != null">
+                ut,
+            </if>
+
+            <if test="ct != null">
+                ct ,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="giftProductId != null">
+                #{giftProductId,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="productname != null">
+                #{productname,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="rollid != null">
+                #{rollid,jdbcType=INTEGER},
+            </if>
+            <if test="ut != null">
+                #{ut,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="ct != null">
+                #{ct,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.RollGift">
+        update roll_gift
+        <set>
+            <if test="giftProductId != null">
+                giftProductId = #{giftProductId,jdbcType=INTEGER},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="productname != null">
+                productname = #{productname,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="rollid != null">
+                rollId = #{rollid,jdbcType=INTEGER},
+            </if>
+            <if test="ut != null">
+                AND ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+
+            <if test="ct != null">
+                AND ct = #{ct,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.RollGift">
+        update roll_gift
+        set giftProductId = #{giftProductId,jdbcType=INTEGER},
+            price         = #{price,jdbcType=DECIMAL},
+            productname   = #{productname,jdbcType=VARCHAR},
+            img           = #{img,jdbcType=VARCHAR},
+            grade         = #{grade,jdbcType=VARCHAR},
+            rollId        = #{rollid,jdbcType=INTEGER},
+            ut            = #{ut,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

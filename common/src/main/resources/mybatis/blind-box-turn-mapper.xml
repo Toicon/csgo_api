@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.blind.BlindBoxTurnPlusMapper">
+
+    <select id="findUserImgByRoomList" resultType="com.csgo.domain.user.UserRoomImgDTO">
+        SELECT u.img, bt.user_id, bt.room_num
+        FROM blind_box_turn bt
+        INNER JOIN `user` u ON bt.user_id = u.id
+        WHERE bt.room_num in
+        <foreach collection="roomList" item="roomNum" open="(" close=")" separator=",">
+            #{roomNum}
+        </foreach>
+        GROUP BY bt.user_id, bt.room_num
+    </select>
+
+    <select id="findByRoomNum" resultType="com.csgo.domain.plus.user.UserPlus">
+        SELECT bt.user_id id, u.balance
+        FROM blind_box_turn bt
+                 INNER JOIN `user` u ON bt.user_id = u.id
+        WHERE room_num = #{roomNum}
+        GROUP BY user_id
+    </select>
+
+    <!--今日排行榜-->
+    <select id="findRankingOfPoints" resultType="com.csgo.domain.plus.blind.BlindBoxUserStarDTO">
+        SELECT SUM(bt.integral) integralCount, bt.user_id id, u.`name`, u.img
+        FROM blind_box_turn bt
+                 INNER JOIN `user` u ON bt.user_id = u.id
+        WHERE DATE_FORMAT(bt.add_time, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d') and bt.integral > 0
+        GROUP BY bt.user_id
+        ORDER BY integralCount desc
+        LIMIT #{limit}
+    </select>
+
+
+    <!--昨日之星-->
+    <select id="getYesterdayStar" resultType="com.csgo.domain.plus.blind.BlindBoxUserStarDTO">
+        SELECT SUM(bt.integral) integralCount, bt.user_id id, u.`name`, u.img
+        FROM blind_box_turn bt
+                 INNER JOIN `user` u ON bt.user_id = u.id
+        WHERE DATE_FORMAT(bt.add_time, '%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 DAY), '%Y-%m-%d')
+        GROUP BY user_id, u.`name`, u.img
+        ORDER BY integralCount DESC LIMIT 1
+    </select>
+
+</mapper>

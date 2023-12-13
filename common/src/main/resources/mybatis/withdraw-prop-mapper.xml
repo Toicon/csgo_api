@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.withdraw.WithdrawPropMapper">
+
+    <select id="findByUserIds" resultType="com.csgo.domain.plus.withdraw.WithdrawPropPriceDTO">
+        SELECT p.user_id, IFNULL(ROUND(sum(pr.zbt_price) / 6.5, 2), 0) as price
+        FROM withdraw_pop p
+        INNER JOIN withdraw_pop_relate pr ON pr.`pop_id`=p.`id`
+        WHERE pr.status in ('RETRIEVE', 'RECEIPTED') and p.user_id in
+        <foreach collection="userIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        GROUP BY p.user_id
+    </select>
+
+    <select id="pagination" parameterType="com.csgo.condition.withdraw.SearchWithdrawPropCondition"
+            resultType="com.csgo.domain.plus.withdraw.WithdrawPropDTO">
+        SELECT p.`id`,u.`user_name` userName,u.`name`,u.`flag`,p.`drew_date`
+        drewDate,p.`status`,p.`ub`,p.`ut`,GROUP_CONCAT(um.`product_name`)AS productNames,
+        GROUP_CONCAT(um.`money`)AS giftPrices,SUM(um.`money`)AS totalAmount,
+        GROUP_CONCAT(if(pr.status='PENDING','待审核',if(pr.status='PASS','通过',if(pr.status='REJECT','拒绝',if(pr.status='FAKE','已发货',if(pr.status='FAILURE','提货失败',
+        if(pr.status='AUTO','等待报价',if(pr.status='WAITING','等待卖家发货',if(pr.status='RETRIEVE','已发货','已收货')))))))))AS
+        descriptions,FIND_IN_SET('PENDING',GROUP_CONCAT(pr.`status`)) AS orderStatus
+        FROM withdraw_pop p
+        INNER JOIN `user` u ON u.id=p.`user_id`
+        INNER JOIN withdraw_pop_relate pr ON pr.`pop_id`=p.`id`
+        INNER JOIN user_message um ON um.`id`=pr.`message_id`
+        where 1=1
+        <if test="condition.userName != null  and condition.userName != ''">
+            and u.user_name like '%${condition.userName}%'
+        </if>
+        <if test="condition.flag != null">
+            and u.flag=#{condition.flag}
+        </if>
+        <if test="condition.startDate != null">
+            and p.ct  <![CDATA[ >= ]]>#{condition.startDate}
+        </if>
+        <if test="condition.endDate != null">
+            and p.ct <![CDATA[ <= ]]> #{condition.endDate}
+        </if>
+        GROUP BY p.`id` ORDER BY orderStatus desc , p.ct desc
+    </select>
+
+    <select id="withdrawCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM  withdraw_pop p
+        inner join (
+        select  r.pop_id from withdraw_pop_relate r
+        where r.status not in('FAILURE','CANCEL')
+        group by r.pop_id
+        ) r on r.pop_id=p.id
+        where p.user_id=#{userId} and p.status='AUTO' and p.ct <![CDATA[ >= ]]>#{drawDate}
+    </select>
+
+</mapper>

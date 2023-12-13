@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.UserMessageMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.user.UserMessage">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="game_name" property="gameName" jdbcType="VARCHAR"/>
+        <result column="gift_type" property="giftType" jdbcType="VARCHAR"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="draw_dare" property="drawDare" jdbcType="TIMESTAMP"/>
+        <result column="state" property="state" jdbcType="VARCHAR"/>
+        <result column="gift_product_id" property="giftProductId" jdbcType="INTEGER"/>
+        <result column="knapsack_state" property="knapsackState" jdbcType="VARCHAR"/>
+        <result column="money" property="money" jdbcType="DECIMAL"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="gift_status" property="giftStatus" jdbcType="VARCHAR"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , user_id, game_name, gift_type, product_name, draw_dare, state, gift_product_id,
+    knapsack_state, money,img,gift_status
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from user_message
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="add" parameterType="com.csgo.domain.user.UserMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into user_message (id, user_id, game_name,
+                                  gift_type, product_name, draw_dare,
+                                  state, gift_product_id, knapsack_state,
+                                  money, img, gift_status)
+        values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{gameName,jdbcType=VARCHAR},
+                #{giftType,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, NOW(),
+                #{state,jdbcType=VARCHAR}, #{giftProductId,jdbcType=INTEGER}, #{knapsackState,jdbcType=VARCHAR},
+                #{money,jdbcType=DECIMAL}, #{img,jdbcType=VARCHAR}, #{giftStatus,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.user.UserMessage">
+        update user_message
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="gameName != null">
+                game_name = #{gameName,jdbcType=VARCHAR},
+            </if>
+            <if test="giftType != null">
+                gift_type = #{giftType,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="drawDare != null">
+                draw_dare = #{drawDare,jdbcType=DATE},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="giftProductId != null">
+                gift_product_id = #{giftProductId,jdbcType=INTEGER},
+            </if>
+            <if test="knapsackState != null">
+                knapsack_state = #{knapsackState,jdbcType=VARCHAR},
+            </if>
+            <if test="money != null">
+                money = #{money,jdbcType=DECIMAL},
+            </if>
+            <if test="giftStatus != null">
+                gift_status = #{giftStatus,jdbcType=VARCHAR},
+            </if>
+
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.user.UserMessage">
+        update user_message
+        set user_id         = #{userId,jdbcType=INTEGER},
+            game_name       = #{gameName,jdbcType=VARCHAR},
+            gift_type       = #{giftType,jdbcType=VARCHAR},
+            product_name    = #{productName,jdbcType=VARCHAR},
+            draw_dare       = #{drawDare,jdbcType=DATE},
+            state           = #{state,jdbcType=VARCHAR},
+            gift_product_id = #{giftProductId,jdbcType=INTEGER},
+            knapsack_state  = #{knapsackState,jdbcType=VARCHAR},
+            money           = #{money,jdbcType=DECIMAL},
+            gift_status     = #{giftStatus,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectOne" parameterType="com.csgo.domain.user.UserMessage" resultMap="BaseResultMap">
+        select * from user_message
+        <where>
+            1=1
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="gameName != null">
+                and game_name = #{gameName,jdbcType=VARCHAR}
+            </if>
+            <if test="giftType != null">
+                and gift_type = #{giftType,jdbcType=VARCHAR}
+            </if>
+            <if test="productName != null">
+                and product_name = #{productName,jdbcType=VARCHAR}
+            </if>
+            <if test="drawDare != null">
+                and draw_dare = #{drawDare,jdbcType=DATE}
+            </if>
+            <if test="state != null">
+                and state = #{state,jdbcType=VARCHAR}
+            </if>
+            <if test="giftProductId != null">
+                and gift_product_id = #{giftProductId,jdbcType=INTEGER}
+            </if>
+            <if test="knapsackState != null">
+                and knapsack_state = #{knapsackState,jdbcType=VARCHAR}
+            </if>
+            <if test="money != null">
+                and money = #{money,jdbcType=DECIMAL}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="giftStatus != null">
+                and gift_status = #{giftStatus,jdbcType=VARCHAR}
+            </if>
+
+        </where>
+        order by draw_dare desc
+        limit 0,1
+    </select>
+
+    <select id="selectList" parameterType="com.csgo.domain.user.UserMessage" resultMap="BaseResultMap">
+        select * from user_message
+        <where>
+            1=1
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="gameName != null">
+                and game_name = #{gameName,jdbcType=VARCHAR}
+            </if>
+            <if test="giftType != null">
+                and gift_type = #{giftType,jdbcType=VARCHAR}
+            </if>
+            <if test="productName != null">
+                and product_name like '%${productName}%'
+            </if>
+            <if test="drawDare != null">
+                and draw_dare = #{drawDare,jdbcType=DATE}
+            </if>
+            <if test="state != null">
+                and state = #{state,jdbcType=VARCHAR}
+            </if>
+            <if test="giftProductId != null">
+                and gift_product_id = #{giftProductId,jdbcType=INTEGER}
+            </if>
+            <if test="knapsackState != null">
+                and knapsack_state = #{knapsackState,jdbcType=VARCHAR}
+            </if>
+            <if test="money != null">
+                and money = #{money,jdbcType=DECIMAL}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="giftStatus != null">
+                and gift_status = #{giftStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by state,draw_dare desc
+    </select>
+
+    <select id="selectListLm" parameterType="com.csgo.domain.user.UserMessage" resultMap="BaseResultMap">
+        select * from user_message
+        <where>
+            1=1
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="gameName != null">
+                and game_name = #{gameName,jdbcType=VARCHAR}
+            </if>
+            <if test="giftType != null">
+                and gift_type = #{giftType,jdbcType=VARCHAR}
+            </if>
+            <if test="productName != null">
+                and product_name like '%${productName}%'
+            </if>
+            <if test="drawDare != null">
+                and draw_dare = #{drawDare,jdbcType=DATE}
+            </if>
+            <if test="state != null">
+                and state = #{state,jdbcType=VARCHAR}
+            </if>
+            <if test="giftProductId != null">
+                and gift_product_id = #{giftProductId,jdbcType=INTEGER}
+            </if>
+            <if test="knapsackState != null">
+                and knapsack_state = #{knapsackState,jdbcType=VARCHAR}
+            </if>
+            <if test="money != null">
+                and money = #{money,jdbcType=DECIMAL}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="giftStatus != null">
+                and gift_status = #{giftStatus,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by state,draw_dare desc
+        limit #{pageNum},#{pageSize}
+    </select>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.box.TreasureBoxMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.box.SearchTreasureBoxCondition" resultType="com.csgo.domain.plus.box.TreasureBox">
+        SELECT tb.id,tb.name,tb.img,tb.halation_img,tb.bg_img,tb.cb,tb.ct,tb.ub,tb.ut FROM treasure_box tb
+        LEFT JOIN  treasure_box_relate tbr ON tbr.treasure_box_id=tb.`id`
+        left JOIN gift g ON g.`id`=tbr.`gift_id`
+        where 1=1
+            <if test="condition.name != null and condition.name != ''">
+                and tb.name like '%${condition.name}%'
+            </if>
+        <if test="condition.giftName != null and condition.giftName != ''">
+            and g.name like '%${condition.giftName}%'
+        </if>
+        GROUP BY tb.`id`
+        order by tb.ct desc
+    </select>
+
+</mapper>

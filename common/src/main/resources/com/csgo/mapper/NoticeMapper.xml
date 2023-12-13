@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.NoticeMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.Notice">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="flag" property="flag" jdbcType="INTEGER"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.csgo.domain.Notice" extends="BaseResultMap">
+        <result column="content" property="content" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , title, flag, content,ct, ut
+    </sql>
+    <sql id="Blob_Column_List">
+        content
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from notice
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectListLt" parameterType="com.csgo.domain.Notice" resultMap="BaseResultMap">
+        select * from notice
+        <where>
+            1=1
+            <if test="content != null">
+                and content = #{content,jdbcType=VARCHAR}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="flag != null">
+                and flag = #{flag,jdbcType=INTEGER}
+            </if>
+
+        </where>
+        order by ct desc
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from notice
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.Notice">
+        insert into notice (id, title, flag,
+                            ct, ut, content)
+        values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER},
+                #{ct,jdbcType=TIMESTAMP}, #{ut,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.Notice">
+        insert into notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="flag != null">
+                flag,
+            </if>
+            <if test="ct != null">
+                ct,
+            </if>
+            <if test="ut != null">
+                ut,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=INTEGER},
+            </if>
+            <if test="ct != null">
+                #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.Notice">
+        update notice
+        <set>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=INTEGER},
+            </if>
+            <if test="ct != null">
+                ct = #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.csgo.domain.Notice">
+        update notice
+        set title   = #{title,jdbcType=VARCHAR},
+            flag    = #{flag,jdbcType=INTEGER},
+            ct      = #{ct,jdbcType=TIMESTAMP},
+            ut      = #{ut,jdbcType=TIMESTAMP},
+            content = #{content,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.Notice">
+        update notice
+        set title = #{title,jdbcType=VARCHAR},
+            flag  = #{flag,jdbcType=INTEGER},
+            ct    = #{ct,jdbcType=TIMESTAMP},
+            ut    = #{ut,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

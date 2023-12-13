@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.accessory.LuckyProductPlusMapper">
+    <select id="get" resultType="com.csgo.domain.plus.accessory.LuckyProductDTO">
+        SELECT lp.id, lp.img_url imgUrl, lp.price, lp.gift_product_id giftProductId,
+               gp.`name` productName, gp.englishName, gp.exterior_name exteriorName
+        FROM sys_lucky_product lp
+        INNER JOIN gift_product gp ON lp.gift_product_id = gp.id
+        WHERE lp.id = #{id} and gp.status='NORMAL'
+    </select>
+
+    <select id="pagination" parameterType="com.csgo.condition.accessory.SearchLuckyProductCondition" resultType="com.csgo.domain.plus.accessory.LuckyProductDTO">
+        SELECT lp.id, lp.img_url imgUrl, lp.price, lp.gift_product_id giftProductId,
+               gp.`name` productName, gp.englishName, gp.exterior_name exteriorName
+        FROM sys_lucky_product lp
+        INNER JOIN gift_product gp ON lp.gift_product_id = gp.id
+        WHERE 1=1 and gp.status='NORMAL'
+        <if test="condition.lowPrice != null">
+            AND lp.price >= #{condition.lowPrice}
+        </if>
+        <if test="condition.highPrice != null">
+            AND #{condition.highPrice} >= lp.price
+        </if>
+        <if test="condition.typeId >0">
+            AND lp.type_id=#{condition.typeId}
+        </if>
+        <if test="condition.csgoType != null and condition.csgoType != ''">
+            AND gp.csgo_type IN (SELECT `key` FROM sys_product_filter_category WHERE parent_key = #{condition.csgoType} OR `key` = #{condition.csgoType})
+        </if>
+        <if test="condition.keywords != null and condition.keywords != ''">
+            AND gp.`name` LIKE CONCAT('%',#{condition.keywords},'%')
+        </if>
+        <if test="condition.priceSort == 1">
+            ORDER BY lp.price DESC
+        </if>
+        <if test="condition.priceSort == -1">
+            ORDER BY lp.price ASC
+        </if>
+        <if test="condition.priceSort == 0">
+            ORDER BY sort_id DESC
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csgo.mapper.RandomProductMapper">
+
+    <resultMap id="baseMap" type="com.csgo.domain.RandomProductDO">
+        <result property="probability" column="probability"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="addTime" column="add_time"/>
+        <result property="giftProductId" column="gift_product_id"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap" type="com.csgo.domain.GiftProduct">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="gift_id" property="giftId" jdbcType="INTEGER"/>
+        <result column="within_probability" property="withinProbability" jdbcType="VARCHAR"/>
+        <result column="out_probability" property="outProbability" jdbcType="VARCHAR"/>
+        <result column="game_name" property="gameName" jdbcType="VARCHAR"/>
+        <result column="isdefault" property="isdefault" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="VARCHAR"/>
+        <result column="englishName" property="englishName" jdbcType="VARCHAR"/>
+        <result column="itemId" property="itemId" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="selectByGiftProductId" resultMap="baseMap">
+        select *
+        from sys_random_product
+        where gift_product_id = #{id}
+          and lucky_id = #{luckyId}
+    </select>
+
+    <select id="getRandomProductList" resultType="com.csgo.domain.RandomProductDO">
+        SELECT rp.id, rp.img_url imgUrl, rp.price, rp.probability, gp.`name` productName, rp.gift_product_id giftProductId
+        FROM sys_random_product rp
+                 INNER JOIN gift_product gp ON rp.gift_product_id = gp.id
+        WHERE lucky_id = #{luckyId} and gp.status='NORMAL'
+    </select>
+
+
+    <select id="getRandomByLuckId" resultType="com.csgo.domain.RandomProductDO">
+        SELECT id,
+               img_url         imgUrl,
+               price,
+               probability,
+               lucky_id        luckyId,
+               gift_product_id giftProductId,
+               add_time        addTime,
+               update_time     updateTime
+        FROM sys_random_product
+        WHERE lucky_id = #{luckyId}
+    </select>
+
+    <update id="updatePriceByGiftProductId">
+        update sys_random_product
+        set price = #{price}
+        where gift_product_id = #{giftProductId}
+    </update>
+</mapper>

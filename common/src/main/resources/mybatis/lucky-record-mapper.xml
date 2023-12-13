@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.user.LuckyRecordMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.user.SearchUserLuckyRecordCondition" resultType="com.csgo.domain.plus.user.UserLuckyRecordDTO">
+        select lr.*, u.user_name, u.flag, u.tag
+        from lucky_record lr
+        inner join user u on lr.user_id = u.id
+        where 1=1
+        <if test="condition.userName !=null and condition.userName !=''">
+            AND u.user_name like '%${condition.userName}%'
+        </if>
+        <if test="condition.flag != null">
+            AND #{condition.flag} = u.flag
+        </if>
+        <if test="condition.tag != null">
+            AND #{condition.tag} = u.tag
+        </if>
+        <if test="condition.startTime !=null">
+            and lr.ct <![CDATA[ >= ]]>#{condition.startTime}
+        </if>
+        <if test="condition.endTime !=null">
+            and lr.ct <![CDATA[ <= ]]>#{condition.endTime}
+        </if>
+        order by lr.ct desc
+    </select>
+</mapper>

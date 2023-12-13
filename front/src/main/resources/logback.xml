@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <property name="serviceName" value="front"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <layout>
+            <!--无色版-->
+            <!--            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{MDC_REQUEST_ID} ] ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } -&#45;&#45; [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}</pattern>-->
+            <!--有色版-->
+            <pattern>%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss,SSS}}){faint} [%X{MDC_REQUEST_ID}] %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint}
+                %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}
+            </pattern>
+        </layout>
+    </appender>
+
+    <appender name="action" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <layout>
+            <pattern>%message%n</pattern>
+        </layout>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="console"/>
+    </root>
+    <logger name="org.apache" level="ERROR"/>
+    <logger name="org.apache.http" level="DEBUG"/>
+    <logger name="org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader" level="ERROR"/>
+    <logger name="org.springframework.web" level="ERROR"/>
+    <logger name="org.springframework.security.web.util.matcher" level="ERROR"/>
+    <logger name="org.springframework.bean" level="ERROR"/>
+    <logger name="org.springframework.context" level="ERROR"/>
+    <logger name="org.xnio" level="ERROR"/>
+    <logger name="springfox" level="ERROR"/>
+    <logger name="io.undertow" level="ERROR"/>
+    <logger name="org.hibernate" level="ERROR"/>
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+    <logger name="org.dozer" level="ERROR"/>
+    <logger name="jdbc.connection" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="INFO"/>
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.sqltiming" level="INFO"/>
+    <logger name="jdbc.sqlonly" level="OFF"/>
+    <logger name="com.minlia.mit" level="DEBUG"/>
+    <logger name="com.minlia.cloud" level="OFF"/>
+    <logger name="com.zaxxer.hikari" level="OFF"/>
+    <logger name="javax.management" level="OFF"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.apache.ibatis" level="INFO"/>
+    <logger name="org.mybatis" level="INFO"/>
+    <logger name="com.hazelcast" level="INFO"/>
+    <logger name="org.aopalliance.intercept" level="DEBUG"/>
+    <logger name="org.apache.http.impl.conn" level="ERROR"/>
+    <logger name="org.apache.http.wire" level="ERROR"/>
+    <logger name="ConditionEvaluationReportLoggingListener" leve="ERROR"/>
+    <logger name="com.echo.framework.support.log.action.ActionLogger" level="DEBUG" additivity="false">
+        <appender-ref ref="action"/>
+    </logger>
+
+</configuration>

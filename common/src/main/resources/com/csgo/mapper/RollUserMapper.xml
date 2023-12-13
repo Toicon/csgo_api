@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.RollUserMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.RollUser">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="userId" property="userid" jdbcType="INTEGER"/>
+        <result column="rollId" property="rollId" jdbcType="INTEGER"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="isappoint" property="isappoint" jdbcType="VARCHAR"/>
+        <result column="rollname" property="rollname" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="flag" property="flag" jdbcType="VARCHAR"/>
+
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+
+        <result column="rollgiftId" property="rollgiftId" jdbcType="INTEGER"/>
+        <result column="rollgiftImg" property="rollgiftImg" jdbcType="VARCHAR"/>
+
+        <result column="rollgiftName" property="rollgiftName" jdbcType="VARCHAR"/>
+
+        <result column="rollgiftPrice" property="rollgiftPrice" jdbcType="DECIMAL"/>
+
+        <result column="rollgiftGrade" property="rollgiftGrade" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , userId, rollId, img, isappoint, rollname, username, flag,ut,ct,rollgiftId,rollgiftImg,rollgiftName,rollgiftPrice,rollgiftGrade
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from roll_user
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByRollGiftIdList" resultType="com.csgo.domain.RollUser">
+        select *
+        from roll_user
+        where rollId = #{rollId,jdbcType=INTEGER}
+          AND isappoint IS NOT NULL
+    </select>
+
+    <select id="selectByList" resultType="com.csgo.domain.RollUser">
+
+        select * from roll_user
+        <where>
+            1=1
+            <if test="userid != null">
+                AND userId = #{userid,jdbcType=INTEGER}
+            </if>
+            <if test="rollId != null">
+                AND rollId = #{rollId,jdbcType=INTEGER}
+            </if>
+            <if test="img != null">
+                AND img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="isappoint != null">
+                AND isappoint = #{isappoint,jdbcType=VARCHAR}
+            </if>
+            <if test="rollname != null">
+                AND rollname = #{rollname,jdbcType=VARCHAR}
+            </if>
+            <if test="username != null">
+                AND username like '%${username}%'
+            </if>
+            <if test="flag != null">
+                AND flag = #{flag,jdbcType=VARCHAR}
+            </if>
+            <if test="ct != null">
+                AND ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+
+            <if test="rollgiftId != null">
+                AND rollgiftId = #{rollgiftId,jdbcType=INTEGER}
+            </if>
+            <if test="rollgiftImg != null">
+                AND rollgiftImg = #{rollgiftImg,jdbcType=VARCHAR}
+            </if>
+            <if test="rollgiftGrade != null">
+                AND rollgiftGrade = #{rollgiftGrade,jdbcType=VARCHAR}
+            </if>
+
+
+        </where>
+        order by ct DESC LIMIT #{pageNum},#{pageSize}
+    </select>
+    <select id="selectByRollUserList" resultType="com.csgo.domain.RollUser">
+        select * from roll_user
+        <where>
+            1=1
+            <if test="userid != null">
+                AND userId = #{userid,jdbcType=INTEGER}
+            </if>
+            <if test="rollId != null">
+                AND rollId = #{rollId,jdbcType=INTEGER}
+            </if>
+            <if test="img != null">
+                AND img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="isappoint != null">
+                AND isappoint = #{isappoint,jdbcType=VARCHAR}
+            </if>
+            <if test="rollname != null">
+                AND rollname = #{rollname,jdbcType=VARCHAR}
+            </if>
+            <if test="username != null">
+                AND username like '%${username}%'
+            </if>
+            <if test="flag != null">
+                AND flag = #{flag,jdbcType=VARCHAR}
+            </if>
+            <if test="ct != null">
+                AND ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="rollgiftId != null">
+                AND rollgiftId = #{rollgiftId,jdbcType=INTEGER}
+            </if>
+            <if test="rollgiftImg != null">
+                AND rollgiftImg = #{rollgiftImg,jdbcType=VARCHAR}
+            </if>
+            <if test="rollgiftGrade != null">
+                AND rollgiftGrade = #{rollgiftGrade,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by ct desc
+
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from roll_user
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.RollUser">
+        insert into roll_user (id, userId, rollId,
+                               img, isappoint, rollname,
+                               username, flag, ct, rollgiftId, rollgiftImg, rollgiftName, rollgiftPrice, rollgiftGrade)
+        values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{rollId,jdbcType=INTEGER},
+                #{img,jdbcType=VARCHAR}, #{isappoint,jdbcType=VARCHAR}, #{rollname,jdbcType=VARCHAR},
+                #{username,jdbcType=VARCHAR}, #{flag,jdbcType=VARCHAR}, #{ct,jdbcType=TIMESTAMP},
+                #{rollgiftId,jdbcType=INTEGER}, #{rollgiftImg,jdbcType=VARCHAR}, #{rollgiftName,jdbcType=VARCHAR}, #{rollgiftPrice,jdbcType=DECIMAL}, #{rollgiftGrade,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.RollUser">
+        insert into roll_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userid != null">
+                userId,
+            </if>
+            <if test="rollId != null">
+                rollId,
+            </if>
+            <if test="img != null">
+                img,
+            </if>
+            <if test="isappoint != null">
+                isappoint,
+            </if>
+            <if test="rollname != null">
+                rollname,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="flag != null">
+                flag,
+            </if>
+            <if test="ct != null">
+                ct,
+            </if>
+
+            <if test="rollgiftId != null">
+                rollgiftId,
+            </if>
+            <if test="rollgiftImg != null">
+                rollgiftImg,
+            </if>
+            <if test="rollgiftName != null">
+                rollgiftName,
+            </if>
+            <if test="rollgiftPrice != null">
+                rollgiftPrice,
+            </if>
+            <if test="rollgiftGrade != null">
+                rollgiftGrade
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userid != null">
+                #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="rollId != null">
+                #{rollId,jdbcType=INTEGER},
+            </if>
+            <if test="img != null">
+                #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="isappoint != null">
+                #{isappoint,jdbcType=VARCHAR},
+            </if>
+            <if test="rollname != null">
+                #{rollname,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=VARCHAR},
+            </if>
+            <if test="ct != null">
+                #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="rollgiftId != null">
+                #{rollgiftId,jdbcType=INTEGER},
+            </if>
+            <if test="rollgiftImg != null">
+                #{rollgiftImg,jdbcType=VARCHAR},
+            </if>
+            <if test="rollgiftName != null">
+                #{rollgiftName,jdbcType=VARCHAR},
+            </if>
+            <if test="rollgiftPrice != null">
+                #{rollgiftPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="rollgiftGrade != null">
+                #{rollgiftGrade,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.RollUser">
+        update roll_user
+        <set>
+            <if test="userid != null">
+                userId = #{userid,jdbcType=INTEGER},
+            </if>
+            <if test="rollId != null">
+                rollId = #{rollId,jdbcType=INTEGER},
+            </if>
+            <if test="img != null">
+                img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="isappoint != null">
+                isappoint = #{isappoint,jdbcType=VARCHAR},
+            </if>
+            <if test="rollname != null">
+                rollname = #{rollname,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=VARCHAR},
+            </if>
+            <if test="ut != null">
+                ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="rollgiftId != null">
+                rollgiftId = #{rollgiftId,jdbcType=INTEGER},
+            </if>
+            <if test="rollgiftImg != null">
+                rollgiftImg = #{rollgiftImg,jdbcType=VARCHAR},
+            </if>
+            <if test="rollgiftName != null">
+                rollgiftName = #{rollgiftName,jdbcType=VARCHAR},
+            </if>
+            <if test="rollgiftPrice != null">
+                rollgiftPrice = #{rollgiftPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="rollgiftGrade != null">
+                rollgiftGrade = #{rollgiftGrade,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.RollUser">
+        update roll_user
+        set userId        = #{userid,jdbcType=INTEGER},
+            rollId        = #{rollId,jdbcType=INTEGER},
+            img           = #{img,jdbcType=VARCHAR},
+            isappoint     = #{isappoint,jdbcType=VARCHAR},
+            rollname      = #{rollname,jdbcType=VARCHAR},
+            username      = #{username,jdbcType=VARCHAR},
+            flag          = #{flag,jdbcType=VARCHAR},
+            ut            = #{ut,jdbcType=TIMESTAMP},
+            rollgiftId    = #{rollgiftId,jdbcType=INTEGER},
+            rollgiftName  = #{rollgiftName,jdbcType=VARCHAR},
+            rollgiftPrice = #{rollgiftPrice,jdbcType=DECIMAL},
+            rollgiftImg   = #{rollgiftImg,jdbcType=VARCHAR},
+            rollgiftGrade = #{rollgiftGrade,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="find" resultType="com.csgo.domain.plus.roll.RollUserDTO">
+        select ru.userId,u.user_name,u.name from roll_user ru
+        inner join user u on u.id=ru.userId
+        <where>
+            1=1
+            <if test="rollId != null">
+                AND ru.rollId = #{rollId,jdbcType=INTEGER}
+            </if>
+        </where>
+        order by ru.ct desc
+    </select>
+
+    <select id="countRollUser" resultType="com.csgo.domain.plus.roll.RollUserCountDTO">
+        select ru.rollId as rollId,count(1) as userCount from roll_user ru
+        <where>
+            1=1
+            <if test="rollIds != null and rollIds.size>0">
+                and ru.rollId in
+                <foreach collection="rollIds" item="rollId" index="index" open="(" close=")" separator=",">
+                    #{rollId}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY ru.rollId
+    </select>
+</mapper>

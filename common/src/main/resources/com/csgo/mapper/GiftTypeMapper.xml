@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.GiftTypeMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.plus.gift.GiftType">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , img, name, type, ct, ut, sort
+    </sql>
+    <select id="selectOne" parameterType="com.csgo.domain.plus.gift.GiftType" resultMap="BaseResultMap">
+        select * from gift_type
+        <where>
+            1=1
+            <if test="img != null">
+                and img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="type != null">
+                and type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="name != null">
+                and name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+            <if test="sort != null">
+                sort = #{sort,jdbcType=INTEGER},
+            </if>
+        </where>
+        order by sort desc,ct desc limit 0,1
+    </select>
+
+    <select id="selectAllType" resultType="com.csgo.domain.plus.gift.GiftType">
+        select
+        <include refid="Base_Column_List"/>
+        from gift_type
+        order by sort desc,ct desc
+    </select>
+
+
+</mapper>

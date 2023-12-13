@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.GiftMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.Gift">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <id column="type_id" property="typeId" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="grade" property="grade" jdbcType="VARCHAR"/>
+        <result column="hidden" property="hidden" jdbcType="BOOLEAN"/>
+        <result column="show_probability" property="showProbability" jdbcType="VARCHAR"/>
+        <result column="gift_password" property="gift_password" jdbcType="VARCHAR"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+        <result column="countwithin" property="countwithin" jdbcType="INTEGER"/>
+        <result column="threshold" property="threshold" jdbcType="DECIMAL"/>
+        <result column="membership_grade" property="membershipGrade" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , type_id,type, price, name, img, created_at, updated_at, grade, gift_password,count,countwithin,hidden,show_probability,threshold,membership_grade,wish_switch,new_people_switch,key_product_id,key_num
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from gift
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from gift
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByPrimaryKeyTypeId">
+        delete
+        from gift
+        where type_id = #{typeId,jdbcType=INTEGER}
+
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.Gift">
+        insert into gift (id, type, price,
+                          name, img, created_at,
+                          updated_at, grade, type_id, gift_password, count, countwithin,hidden,show_probability)
+        values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
+                #{name,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP},
+                #{updatedAt,jdbcType=TIMESTAMP}, #{grade,jdbcType=VARCHAR}, #{typeId,jdbcType=INTEGER},
+                #{gift_password,jdbcType=VARCHAR}, #{count,jdbcType=INTEGER}, #{countwithin,jdbcType=INTEGER}, #{hidden,jdbcType=BOOLEAN},
+                #{showProbability,jdbcType=VARCHAR}, #{threshold,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.Gift">
+        insert into gift
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="img != null">
+                img,
+            </if>
+            <if test="createdAt != null">
+                created_at,
+            </if>
+            <if test="updatedAt != null">
+                updated_at,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+            <if test="gift_password != null">
+                gift_password,
+            </if>
+            <if test="count != null">
+                count,
+            </if>
+            <if test="typeId != null">
+                type_id,
+            </if>
+            <if test="countwithin != null">
+                countwithin,
+            </if>
+            <if test="hidden != null">
+                hidden,
+            </if>
+            <if test="showProbability != null">
+                show_probability,
+            </if>
+            <if test="threshold != null">
+                threshold,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="createdAt != null">
+                #{createdAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedAt != null">
+                #{updatedAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="gift_password != null">
+                #{gift_password,jdbcType=VARCHAR},
+            </if>
+            <if test="showProbability != null">
+                #{show_probability,jdbcType=VARCHAR},
+            </if>
+            <if test="count != null">
+                #{count,jdbcType=INTEGER},
+            </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=INTEGER},
+            </if>
+            <if test="countwithin != null">
+                #{countwithin,jdbcType=INTEGER},
+            </if>
+            <if test="hidden != null">
+                #{hidden,jdbcType=BOOLEAN},
+            </if>
+            <if test="threshold != null">
+                #{threshold,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.Gift">
+        update gift
+        <set>
+            <if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="createdAt != null">
+                created_at = #{createdAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedAt != null">
+                updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+            <if test="gift_password != null">
+                gift_password = #{gift_password,jdbcType=VARCHAR},
+            </if>
+            <if test="showProbability != null">
+                show_probability = #{showProbability,jdbcType=VARCHAR},
+            </if>
+            <if test="count != null">
+                count = #{count,jdbcType=INTEGER},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId,jdbcType=INTEGER},
+            </if>
+            <if test="countwithin != null">
+                countwithin = #{countwithin,jdbcType=INTEGER},
+            </if>
+            <if test="hidden != null">
+                hidden = #{hidden,jdbcType=BOOLEAN},
+            </if>
+            <if test="threshold != null">
+                threshold = #{threshold,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.Gift">
+        update gift
+        set type          = #{type,jdbcType=VARCHAR},
+            price         = #{price,jdbcType=DECIMAL},
+            name          = #{name,jdbcType=VARCHAR},
+            img           = #{img,jdbcType=VARCHAR},
+            created_at    = #{createdAt,jdbcType=TIMESTAMP},
+            updated_at    = #{updatedAt,jdbcType=TIMESTAMP},
+            grade         = #{grade,jdbcType=VARCHAR},
+            gift_password = #{gift_password,jdbcType=VARCHAR},
+            show_probability = #{showProbability,jdbcType=VARCHAR},
+            type_id       = #{typeId,jdbcType=INTEGER},
+            count         = #{count,jdbcType=INTEGER},
+            countwithin   = #{countwithin,jdbcType=INTEGER},
+            hidden   = #{hidden,jdbcType=BOOLEAN},
+            threshold = #{threshold,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="getList" parameterType="com.csgo.domain.Gift"
+            resultMap="BaseResultMap">
+        select * from gift
+        <where>
+            1=1
+            <if test="id != null">
+                and id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="type != null">
+                and type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="price != null">
+                and price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="name != null">
+                and name like '%${name}%'
+            </if>
+            <if test="img != null">
+                and img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="createdAt != null">
+                and created_at = #{createdAt,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updatedAt != null">
+                and updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+            </if>
+            <if test="grade != null">
+                and grade = #{grade,jdbcType=VARCHAR}
+            </if>
+            <if test="gift_password != null">
+                and gift_password = #{gift_password,jdbcType=VARCHAR}
+            </if>
+            <if test="hidden != null">
+                and hidden = #{hidden,jdbcType=BOOLEAN}
+            </if>
+        </where>
+        order by created_at desc
+    </select>
+
+
+    <select id="getListByPage" parameterType="com.csgo.domain.Gift"
+            resultMap="BaseResultMap">
+        select * from gift
+        <where>
+            1=1
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="typeId != null">
+                and type_id = #{typeId,jdbcType=INTEGER}
+            </if>
+            <if test="type != null">
+                and type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="price != null">
+                and price = #{price,jdbcType=DECIMAL}
+            </if>
+            <if test="name != null">
+                and name like '%${name}%'
+            </if>
+            <if test="img != null">
+                and img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="createdAt != null">
+                and created_at = #{createdAt,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updatedAt != null">
+                and updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+            </if>
+            <if test="grade != null">
+                and grade = #{grade,jdbcType=VARCHAR}
+            </if>
+            <if test="gift_password != null">
+                and gift_password = #{gift_password,jdbcType=VARCHAR}
+            </if>
+            <if test="hidden != null">
+                and hidden = #{hidden,jdbcType=BOOLEAN}
+            </if>
+        </where>
+        order by created_at desc limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="getTypeList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from gift
+        where type_id = #{type,jdbcType=INTEGER}
+        order by price
+    </select>
+    <select id="queryAllGift" resultType="com.csgo.domain.Gift">
+        select
+        <include refid="Base_Column_List"/>
+        from gift
+    </select>
+    <update id="emptyCount">
+        update gift
+        set count       = 0,
+            countwithin = 0
+    </update>
+
+    <update id="emptyCount2">
+        update gift_product_record
+        set num = 0
+    </update>
+
+
+</mapper>

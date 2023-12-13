@@ -1,0 +1,107 @@
+server:
+  port: 8080
+
+portal:
+  app:
+    session:
+      type: REDIS
+      session-key-prefix: FRONT-SESSION
+    exception-code-prefix: 1000
+    i18n:
+      default-locale: zh_CN
+
+management:
+  endpoints:
+    web:
+      base-path: /monitor
+      exposure:
+        #加载所有的端点，默认只加载了info、health
+        #        include: ['info','health','management']
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+    #可以关闭指定的端点
+    shutdown:
+      enabled: false
+
+logging:
+  config: classpath:logback.xml
+
+mybatis-plus:
+  mapperLocations: [ "classpath:mybatis/*-mapper.xml" ]
+
+spring:
+  application:
+    name: @artifactId@
+  profiles:
+    active: dev
+  datasource:
+    jpa:
+      auto-generate-ddl: false
+      scan-packages: [ com.csgo.domain ]
+      show-sql: true
+  jackson:
+    serialization:
+      indent_output: true
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+  mvc:
+    throw-exception-if-no-handler-found: true
+  servlet:
+    multipart:
+      max-file-size: '1000MB'
+      max-request-size: '1500MB'
+  cache:
+    type: redis
+    redis:
+      key-prefix: FRONT-CACHE
+      time-to-live: 60
+
+tencent:
+  secretId: XXXXXXXXXXXXXXX
+  secretKey: XXXXXXXXXXXXXXX
+
+oss:
+  service:
+    endpoint: oss-cn-shenzhen.aliyuncs.com
+    publicEndpoint: XXXXXXXXXXXXXXXXXXXXX
+    accessKeyId: XXXXXXXXXXXXXXXXXXXXX
+    accessKeySecret: XXXXXXXXXXXXXXXXXXXXX
+    bucket: XXXXXXXXXXXXXXXXXXXXX
+    dir: front
+
+zbt:
+  quicklyBuy: https://app.zbt.com/open/trade/v2/quick-buy?app-key=XXXXXXXXXXXXXXXXXXXXXXXXXX&language=zh_CN
+  retrieveUrl: https://app.zbt.com/open/trade/v2/quick-buy?app-key=XXXXXXXXXXXXXXXXXXXXXXXXXX&language=zh_CN
+  searchUrl: https://app.zbt.com/open/product/v2/search?
+  appKey: XXXXXXXXXXXXXXXXXXXXXXXXXX
+  appId: XXX
+  apiUrl: https://app.zbt.com
+  orderQuery: https://app.zbt.com/open/order/v2/buy/detail?
+  productFilter: https://app.zbt.com/open/product/v1/filters?
+  steamUrl: https://steamcommunity.com/tradeoffer/
+  priceUrl: https://app.zbt.com/open/product/price/info?app-key=XXXXXXXXXXXXXXXXXXXXXXXXXX&language=zh_CN
+  steamCheck: https://app.zbt.com/open/user/steam-check/create?app-key=XXXXXXXXXXXXXXXXXXXXXXXXXX&language=zh_CN
+
+sms:
+  qcloud:
+    enable: true
+    app-id: 1400860697
+    appkey: XXXXXXXXXXXXXXXXXXXXX
+    sms-sign: 签名
+    templates:
+      VerificationCode: 0
+      ItemOffline: 0
+      ItemSend: 0
+      GlobalProductUpdate: 0
+    paramsOrders:
+      VerificationCode:
+        - code
+      ItemOffline:
+        - content
+      ItemSend:
+        - content
+      GlobalProductUpdate:
+        - name

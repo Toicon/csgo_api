@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.blind.BlindBoxProductPlusMapper">
+
+    <!--前台不需要给太多的参数-->
+    <select id="findByBoxId" resultType="com.csgo.domain.plus.blind.BlindBoxProductDTO">
+        SELECT bp.*, p.name productName
+        FROM blind_box_product bp INNER JOIN gift_product p ON bp.gift_product_id = p.id
+        where bp.blind_box_id=#{blindBoxId} and p.status='NORMAL'
+        order by bp.price desc
+    </select>
+
+    <select id="findAllProductId" resultType="java.lang.Integer">
+        SELECT bp.gift_product_id
+        FROM blind_box_product bp
+        group by bp.gift_product_id
+    </select>
+
+    <select id="findByBoxIds" resultType="com.csgo.domain.plus.blind.BlindBoxProductDTO">
+        SELECT bp.*, p.name productName
+        FROM blind_box_product bp INNER JOIN gift_product p ON bp.gift_product_id = p.id
+        where bp.blind_box_id in
+        <foreach collection="blindBoxIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and p.status='NORMAL'
+        order by bp.update_time desc
+    </select>
+
+    <select id="findBoxNames" resultType="java.lang.String">
+        SELECT GROUP_CONCAT(b.name)
+        FROM
+        blind_box b
+        inner join blind_box_product bp on bp.blind_box_id=b.id
+        INNER JOIN gift_product p ON bp.gift_product_id = p.id
+        where bp.gift_product_id=#{giftProductId}
+        and p.status='NORMAL'
+        group by bp.gift_product_id
+    </select>
+
+    <select id="pagination" parameterType="com.csgo.condition.blind.SearchBlindBoxProductCondition" resultType="com.csgo.domain.plus.blind.BlindBoxProductDTO">
+        SELECT bp.*, p.name productName FROM blind_box_product bp INNER JOIN gift_product p ON bp.gift_product_id = p.id
+        <where>
+            p.status='NORMAL'
+            <if test="condition.keywords!=null and condition.keywords!=''">
+                and p.name like '%${condition.keywords}%'
+            </if>
+            <if test="condition.blindBoxId != null">
+                and bp.blind_box_id=#{condition.blindBoxId}
+            </if>
+        </where>
+        order by bp.probability desc,bp.update_time desc
+    </select>
+
+</mapper>

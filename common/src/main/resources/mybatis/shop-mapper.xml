@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.shop.ShopMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.shop.SearchShopCondition" resultType="com.csgo.domain.plus.shop.ShopDTO">
+        SELECT s.id,s.`gift_product_id`,s.`hidden`,s.`stock`,g.`origin_amount` as price,g.`name`,g.img as imgUrl ,s.ct FROM shop s
+        INNER JOIN gift_product g ON g.id=s.`gift_product_id`
+        <where>
+            s.`status`='NORMAL'
+            <if test="condition.keywords!=null and condition.keywords!=''">
+                and g.name like '%${condition.keywords}%'
+            </if>
+        </where>
+        order by s.ct desc
+    </select>
+
+    <select id="findPage" parameterType="com.csgo.condition.shop.SearchShopCondition"
+            resultType="com.csgo.domain.plus.shop.ShopDTO">
+        SELECT s.id,s.`gift_product_id`,s.`hidden`,s.`stock`,round(g.`origin_amount` * #{condition.shopSpillPriceRate},2)
+        as price,g.`name`,g.img as imgUrl,g.csgo_type as csgoType ,s.ct FROM shop s
+        INNER JOIN gift_product g ON g.id=s.`gift_product_id`
+        <where>
+            s.`status`='NORMAL'
+            <if test="condition.keywords!=null and condition.keywords!=''">
+                and g.name like concat('%',#{condition.keywords},'%')
+            </if>
+            <if test="condition.lowPrice!=null">
+                and price >= #{condition.lowPrice}
+            </if>
+            <if test="condition.highPrice!=null">
+                and price <![CDATA[ <= ]]> #{condition.highPrice}
+            </if>
+            <if test="condition.csgoType!=null and condition.csgoType!=''">
+                and g.csgo_type = #{condition.csgoType}
+            </if>
+        </where>
+        <if test="condition.sort !=null and condition.sort !=''">
+            order by ${condition.sortBy} ${condition.sort}
+        </if>
+        <if test="condition.sort ==null or condition.sort ==''">
+            order by s.ct desc
+        </if>
+    </select>
+
+    <select id="listByIds" resultType="com.csgo.domain.plus.shop.ShopDTO">
+        SELECT s.id,s.`gift_product_id`,s.`hidden`,s.`stock`,round(g.`origin_amount` * #{shopSpillPriceRate},2)
+        as price,g.`name`,g.img as imgUrl,g.csgo_type as csgoType ,s.ct FROM shop s
+        INNER JOIN gift_product g ON g.id=s.`gift_product_id`
+        <where>
+            s.`status`='NORMAL'
+            and s.id in
+            <foreach collection="shopIds" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
+        order by s.ct desc
+    </select>
+
+    <select id="findAllProductId" resultType="java.lang.Integer">
+        SELECT bp.gift_product_id
+        FROM shop bp
+        group by bp.gift_product_id
+    </select>
+
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.lottery.LuckyProductDrawRecordMapper">
+    <select id="top15" resultType="com.csgo.domain.plus.lucky.LuckyProductDrawRecordDTO">
+        select u.name  as userName,
+               u.img   as userImg,
+               g.name  as giftName,
+               g.img   as giftImg,
+               lr.rate as lucky,
+               g.price as price,
+               lr.ct   as createTime
+        from lucky_product_draw_record lr
+                 left join `user` u on lr.user_id = u.id
+                 left join gift_product g on lr.hit_product_id = g.id
+        where 1 = 1
+          and lr.lucky_id = #{luckyId}
+        order by lr.ct desc
+        limit 0,15
+    </select>
+</mapper>

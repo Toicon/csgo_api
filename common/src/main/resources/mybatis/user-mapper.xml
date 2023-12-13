@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.user.UserPlusMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.user.SearchUserPlusCondition"
+            resultType="com.csgo.domain.plus.user.UserPlusDTO">
+        select u.* ,(SELECT COUNT(id) FROM `user` uu WHERE uu.parent_id = u.id) recommendCount,m.grade as `level` from
+        user u
+        inner join membership m on m.user_id=u.id
+        <where>
+            1=1
+            <if test="condition.userName !=null and condition.userName !=''">
+                and (u.user_name like '%${condition.userName}%' or u.extension_code like '%${condition.userName}%' or
+                u.name like '%${condition.userName}%')
+            </if>
+            <if test="condition.inviteUser !=null and condition.inviteUser !=''">
+                and u.name like '%${condition.inviteUser}%'
+            </if>
+            <if test="condition.frozen !=null">
+                and u.frozen=#{condition.frozen}
+            </if>
+            <if test="condition.flag !=null">
+                and u.flag=#{condition.flag}
+            </if>
+            <if test="condition.status !=null">
+                and u.status=#{condition.status}
+            </if>
+            <if test="condition.parentId !=null">
+                and u.parent_id=#{condition.parentId}
+            </if>
+            <if test="condition.startTime !=null and condition.startTime !='' ">
+                and u.created_at <![CDATA[ >= ]]>#{condition.startTime}
+            </if>
+            <if test="condition.endTime !=null and condition.endTime !='' ">
+                and u.created_at <![CDATA[ <= ]]>#{condition.endTime}
+            </if>
+            <if test="condition.tag !=null">
+                and u.tag=#{condition.tag}
+            </if>
+            <if test="condition.isInner">
+                AND u.tag IN('ANCHOR','OPERATOR')
+            </if>
+        </where>
+        <if test="condition.sort !=null and condition.sort !=''">
+            order by ${condition.sortBy} ${condition.sort}
+        </if>
+        <if test="condition.sort ==null or condition.sort ==''">
+            order by u.created_at desc
+        </if>
+    </select>
+
+    <select id="findByRoomNum" resultType="com.csgo.domain.plus.user.UserPlus">
+        SELECT u.*
+        FROM `user` u
+                 INNER JOIN blind_box_turn bt ON bt.user_id = u.id
+        WHERE bt.room_num = #{roomNum}
+        GROUP BY bt.user_id
+    </select>
+
+    <select id="countAddUser" resultType="com.csgo.domain.report.StatisticsDTO">
+        SELECT
+        date_format(temp.created_at, '%Y-%m-%d') as date,
+        temp.deptId,
+        temp.deptName,
+        count(1) as count
+        from
+        (
+        select
+        u.created_at,
+        u.id as userId,
+        anchor.deptId,
+        anchor.deptName
+        FROM `user` u
+        inner join (
+        select
+        anchor.user_id,
+        dept.id as deptId,
+        dept.dept_name as deptName
+        from
+        admin_user_anchor anchor,
+        admin_user adminUser,
+        sys_dept dept
+        where
+        anchor.admin_user_id = adminUser.id
+        and adminUser.dept_id = dept.id
+        ${dataScope}
+        ) anchor on anchor.user_id = u.parent_id
+        WHERE
+        u.flag = 0
+        and u.created_at <![CDATA[ >= ]]>#{startDate}
+        and u.created_at  <![CDATA[ <= ]]>#{endDate}
+        union all
+        select
+        u.created_at,
+        u.id as userId,
+        4 as deptId,
+        '未归属主播' as deptName
+        FROM `user` u
+        WHERE
+        u.flag = 0
+        and u.created_at <![CDATA[ >= ]]>#{startDate}
+        and u.created_at  <![CDATA[ <= ]]>#{endDate}
+        and not exists (
+        select 1
+        from
+        admin_user_anchor anchor
+        where anchor.user_id = u.parent_id
+        )
+        ) as temp
+        GROUP BY date_format(temp.created_at, '%Y-%m-%d'),temp.deptId,temp.deptName
+    </select>
+
+    <select id="countBalance" resultType="com.csgo.domain.report.UserBalanceDTO">
+        SELECT
+        IFNULL(sum(u.balance),0) as balanceAmount,
+        IFNULL(sum(u.diamond_balance),0) as diamondAmount
+        FROM `user` u
+        inner join (
+        select
+        anchor.user_id
+        from
+        admin_user_anchor anchor,
+        admin_user adminUser
+        where
+        anchor.admin_user_id = adminUser.id
+        and adminUser.dept_id = ${deptId}
+        ) anchor on anchor.user_id = u.parent_id
+        WHERE u.flag = 0 and u.created_at  <![CDATA[ <= ]]>#{endDate}
+    </select>
+    <!-- 未归属部门 -->
+    <select id="countBalanceNotOwner" resultType="com.csgo.domain.report.UserBalanceDTO">
+        SELECT
+        IFNULL(sum(u.balance),0) as balanceAmount,
+        IFNULL(sum(u.diamond_balance),0) as diamondAmount
+        FROM `user` u
+        WHERE u.flag = 0 and u.created_at  <![CDATA[ <= ]]>#{endDate}
+        and not exists (
+            select 1
+            from
+            admin_user_anchor anchor
+            where anchor.user_id = u.parent_id
+        )
+    </select>
+
+    <select id="countOldUser" resultType="int">
+        SELECT IFNULL(count(0),0) as amount
+        FROM `user` u
+        inner join (
+        select
+        anchor.user_id
+        from
+        admin_user_anchor anchor,
+        admin_user adminUser
+        where
+        anchor.admin_user_id = adminUser.id
+        and adminUser.dept_id = ${deptId}
+        ) anchor on anchor.user_id = u.parent_id
+        WHERE u.flag = 0 and u.created_at  <![CDATA[ <= ]]>#{startDate}
+    </select>
+    <!-- 未归属部门 -->
+    <select id="countOldUserNotOwner" resultType="int">
+        SELECT IFNULL(count(0),0) as amount
+        FROM `user` u
+        WHERE
+        u.flag = 0
+        and u.created_at  <![CDATA[ <= ]]> #{startDate}
+        and not exists (
+        select 1
+        from
+        admin_user_anchor anchor
+        where anchor.user_id = u.parent_id
+        )
+    </select>
+
+    <select id="countOldUserByCreateDate" resultType="com.csgo.model.StatisticsUserCountDTO">
+        SELECT
+            date_format(u.created_at, '%Y-%m-%d') as createDate,
+            adminUser.dept_id,
+            IFNULL(count(0), 0) as userCount
+        FROM user u
+                 LEFT JOIN admin_user_anchor anchor on anchor.user_id = u.parent_id
+                 LEFT JOIN admin_user adminUser on anchor.admin_user_id= adminUser.id
+        WHERE
+            u.flag = 0
+          and u.created_at <![CDATA[ <= ]]> #{createDate}
+        GROUP BY createDate,adminUser.dept_id;
+    </select>
+
+    <select id="countBalanceByCreateDate" resultType="com.csgo.model.StatisticsUserBalanceDTO">
+        SELECT
+            date_format(u.created_at, '%Y-%m-%d') as createDate,
+            adminUser.dept_id,
+            IFNULL(sum(u.balance), 0) as balanceAmount,
+            IFNULL(sum(u.diamond_balance), 0) as diamondAmount
+        FROM user u
+                 LEFT JOIN admin_user_anchor anchor on anchor.user_id = u.parent_id
+                 LEFT JOIN admin_user adminUser on anchor.admin_user_id= adminUser.id
+        WHERE
+            u.flag = 0
+          and u.created_at <![CDATA[ <= ]]> #{createDate}
+        GROUP BY createDate,adminUser.dept_id;
+    </select>
+
+</mapper>

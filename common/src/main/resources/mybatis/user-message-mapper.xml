@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.user.UserMessagePlusMapper">
+
+    <select id="getMaxPriceProduct" resultType="com.csgo.modular.product.model.front.ProductSimpleVO">
+        SELECT
+        t1.gift_product_id as productId,
+        t1.product_name as productName,
+        t1.money as productPrice,
+        t1.img as productImg
+        FROM user_message t1
+        <where>
+            user_id = #{userId}
+            <if test="startDate != null">
+                AND draw_dare >= #{startDate}
+            </if>
+            <if test="giftType != null">
+                and gift_type = #{giftType}
+            </if>
+        </where>
+        ORDER BY money DESC limit 1
+    </select>
+
+    <select id="getMaxPriceProductBySource" resultType="com.csgo.modular.product.model.front.ProductSimpleVO">
+        SELECT
+        t1.gift_product_id as productId,
+        t1.product_name as productName,
+        t1.money as productPrice,
+        t1.img as productImg
+        FROM user_message t1
+        <where>
+            user_id = #{userId}
+            <if test="startDate != null">
+                AND draw_dare >= #{startDate}
+            </if>
+            <if test="fromSource != null">
+                and from_source = #{fromSource}
+            </if>
+        </where>
+        ORDER BY money DESC limit 1
+    </select>
+
+    <select id="getMaxPriceProductOfBox" resultType="com.csgo.modular.product.model.front.ProductSimpleVO">
+        SELECT
+        t1.gift_product_id as productId,
+        t1.product_name as productName,
+        t1.money as productPrice,
+        t1.img as productImg
+        FROM user_message t1
+        <where>
+            user_id = #{userId}
+            <if test="startDate != null">
+                AND draw_dare >= #{startDate}
+            </if>
+            <if test="typeList != null and typeList.size()!=0 ">
+                and t1.gift_type in
+                <foreach collection="typeList" item="typeName" index="index" open="(" close=")" separator=",">
+                    #{typeName}
+                </foreach>
+            </if>
+        </where>
+        ORDER BY money DESC limit 1
+    </select>
+
+    <select id="getOpenBoxCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        from user_message t1
+        <where>
+            t1.user_id = #{userId}
+            <if test="startDate != null ">
+                and t1.draw_dare  <![CDATA[ >= ]]> #{startDate}
+            </if>
+            <if test="typeList != null and typeList.size()!=0 ">
+                and t1.gift_type in
+                <foreach collection="typeList" item="typeName" index="index" open="(" close=")" separator=",">
+                    #{typeName}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getCountBySource" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        from user_message t1
+        <where>
+            t1.user_id = #{userId}
+            <if test="startDate != null ">
+                and t1.draw_dare  <![CDATA[ >= ]]> #{startDate}
+            </if>
+            <if test="fromSource != null">
+                and t1.from_source = #{fromSource}
+            </if>
+        </where>
+    </select>
+
+    <select id="getSumOpenBoxMoney" resultType="java.math.BigDecimal">
+        SELECT IFNULL(sum(t1.money), 0) from user_message t1
+        <where>
+            t1.user_id = #{userId}
+            <if test="startDate != null ">
+                and t1.draw_dare  <![CDATA[ >= ]]> #{startDate}
+            </if>
+            <if test="typeList != null and typeList.size()!=0 ">
+                and t1.gift_type in
+                <foreach collection="typeList" item="typeName" index="index" open="(" close=")" separator=",">
+                    #{typeName}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="pagination" parameterType="com.csgo.condition.SearchUserMessageCondition"
+            resultType="com.csgo.domain.plus.user.UserMessageDTO">
+        select um.*, gp.exterior_name as exteriorName from user_message um
+        inner join gift_product gp on um.gift_product_id = gp.id
+        inner join user_message_gift umg on umg.user_message_id=um.id
+        <where>
+            (um.`state`='0' OR um.`state`='3')
+            <if test="condition.userId != null">
+                and um.user_id = #{condition.userId,jdbcType=INTEGER}
+            </if>
+            <if test="condition.productKind != null">
+                and um.product_kind = #{condition.productKind,jdbcType=INTEGER}
+            </if>
+        </where>
+        order by um.state,um.draw_dare desc
+    </select>
+
+    <select id="countPrice" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(um.`money`),0) AS amount FROM user_message um
+        inner join user u on u.id=um.user_id
+        inner join (
+        select
+        anchor.user_id
+        from
+        admin_user_anchor anchor,
+        admin_user adminUser
+        where
+        anchor.admin_user_id = adminUser.id
+        and adminUser.dept_id = ${deptId}
+        ) anchor on anchor.user_id = u.parent_id
+        WHERE (um.`state`='0' OR um.`state`='3') and u.flag=0
+        <if test="endDate != null">
+            AND um.`draw_dare` &lt; #{endDate}
+        </if>
+    </select>
+
+    <!-- 未归属部门 -->
+    <select id="countPriceNotOwner" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(um.`money`),0) AS amount FROM user_message um
+        inner join user u on u.id=um.user_id
+        WHERE (um.`state`='0' OR um.`state`='3') and u.flag=0
+        <if test="endDate != null">
+            AND um.`draw_dare` &lt; #{endDate}
+        </if>
+        and not exists (
+        select 1
+        from
+        admin_user_anchor anchor
+        where anchor.user_id = u.parent_id
+        )
+    </select>
+
+    <select id="findIdAndTurnId" resultType="com.csgo.domain.plus.message.MessageTurnDTO">
+        SELECT id messageId, turn_id turnId
+        FROM user_message
+        WHERE turn_id IN (SELECT id FROM blind_box_turn WHERE room_num = #{roomNum})
+    </select>
+
+    <select id="findWithdrawAmountByUserId" resultType="java.math.BigDecimal">
+        SELECT SUM(um.`money`) AS amount FROM  user_message um
+        inner join withdraw_pop_relate r on r.message_id=um.id
+        where um.user_id=#{userId} and r.status not in('FAILURE','CANCEL')
+    </select>
+
+    <select id="getKeyStatistics" resultType="com.csgo.modular.product.model.dto.UserMessageKeyStatisticsDTO">
+        SELECT um.gift_product_id AS productId, p.name as productName, p.img AS productImg, COUNT(*) AS productNum
+        FROM user_message um
+                 INNER JOIN gift_product p ON um.gift_product_id = p.id
+        WHERE um.product_kind = 1 and um.state=0 and um.user_id=#{userId}
+        GROUP BY um.gift_product_id
+    </select>
+
+    <delete id="deleteBeforeTime">
+        DELETE
+        user_message FROM user_message
+        LEFT JOIN `user` ON `user_message`.`user_id` = `user`.`id`
+        WHERE
+        `user_message`.state IN (1,2)
+        AND `user`.`flag`= #{flag}
+        AND `user_message`.`draw_dare` <![CDATA[<=]]> #{beforeTime}
+    </delete>
+
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.roll.RollUserPlusMapper">
+
+    <select id="findInnerAndUnAppoint" resultType="java.lang.Integer">
+        SELECT r.userId
+        FROM roll_user r
+                 inner join user u on r.userId = u.id
+        WHERE u.flag = '1'
+          AND (r.isappoint = '0' or r.isappoint is null)
+          AND r.rollId = #{rollId}
+    </select>
+
+    <select id="findSelectRoomUserPage" resultType="com.csgo.domain.plus.roll.RollUserDTO">
+        select ru.userId, u.user_name, u.name
+        from roll_user ru
+        inner join user u on u.id = ru.userId
+        <where>
+            ru.rollId = #{condition.rollId,jdbcType=INTEGER}
+            <if test="condition.keyword!=null and condition.keyword!=''">
+                and u.user_name LIKE CONCAT(#{condition.keyword},'%')
+            </if>
+        </where>
+        order by ru.ct desc
+    </select>
+
+    <select id="findRoomUserPage" resultType="com.csgo.domain.plus.roll.RollUserDTO">
+        select ru.userId, u.user_name, u.name,u.flag,IFNULL(SUM(o.order_amount),0) AS rechargeAmount
+        from roll_user ru
+        inner join user u on u.id = ru.userId
+        LEFT JOIN order_record o ON o.user_id=ru.userId AND o.order_status=2
+        <where>
+            ru.rollId = #{condition.rollId,jdbcType=INTEGER}
+            <if test="condition.userName!=null and condition.userName!=''">
+                and u.user_name LIKE CONCAT(#{condition.userName},'%')
+            </if>
+            <if test="condition.flag!=null">
+                and u.flag = #{condition.flag}
+            </if>
+        </where>
+        GROUP BY ru.userId
+        ORDER BY rechargeAmount desc
+    </select>
+
+
+</mapper>

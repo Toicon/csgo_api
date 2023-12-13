@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.modular.tendraw.mapper.TenDrawGameMapper">
+
+    <select id="getAdminPage" resultType="com.csgo.modular.tendraw.model.admin.AdminTenDrawGameVO">
+        select t.*,u.user_name as userName,u.name as userNameQ from ten_draw_game t
+        inner join user u on t.user_id=u.id
+        <if test="condition.userId != null">
+            and t.user_id = #{condition.userId}
+        </if>
+        <if test="condition.userName != null and condition.userName != ''">
+            and u.user_name = #{condition.userName}
+        </if>
+        <if test="condition.userNameQ != null and condition.userNameQ != ''">
+            and u.name like CONCAT(#{condition.userNameQ},'%')
+        </if>
+        <if test="condition.startDate != null">
+            and t.create_date <![CDATA[>=]]> #{condition.startDate}
+        </if>
+        <if test="condition.endDate != null">
+            and t.create_date <![CDATA[<=]]> #{condition.endDate}
+        </if>
+        <if test="condition.prizePriceMin != null">
+            and t.reward_product_price <![CDATA[>=]]> #{condition.prizePriceMin}
+        </if>
+        <if test="condition.prizePriceMax != null">
+            and t.reward_product_price <![CDATA[<=]]> #{condition.prizePriceMax}
+        </if>
+        order by t.id desc
+    </select>
+
+</mapper>

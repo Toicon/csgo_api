@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.user.UserLoginRecordMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.user.SearchUserLoginRecordCondition"
+            resultType="com.csgo.domain.plus.user.UserLoginRecordDTO">
+        select
+        r.id,
+        r.ip,
+        r.ct,
+        u.user_name as userName
+        from
+        user_login_record r,
+        user u
+        where
+        r.user_id = u.id
+        <if test="condition.userName !=null and condition.userName !=''">
+            AND u.user_name like '%${condition.userName}%'
+        </if>
+        <if test="condition.ip !=null and condition.ip != ''">
+            AND r.ip = #{condition.ip}
+        </if>
+        order by r.ct desc,r.id
+    </select>
+</mapper>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.ReportMapper">
+    <!-- 储值实付 -->
+    <select id="sumDayPaid" resultType="com.csgo.domain.report.UserStoredSummaryDto">
+        SELECT
+        date_format(o.paid_time,'%Y-%m-%d') as date,
+        SUM(o.order_amount) as amount
+        FROM order_record as o,`user` as u
+        WHERE
+        o.user_id = u.id
+        AND u.flag = 0
+        AND o.order_status = 2
+        AND o.paid_time  <![CDATA[ >= ]]> #{startDate}
+        AND o.paid_time  <![CDATA[ <= ]]> #{endDate}
+        GROUP BY date_format(o.paid_time, '%Y-%m-%d')
+    </select>
+
+    <!-- 赠送卡值 -->
+    <select id="sumDayExtra" resultType="com.csgo.domain.report.UserStoredSummaryDto">
+        SELECT
+        date_format(o.paid_time,'%Y-%m-%d') as date,
+        SUM(o.extra_price) as amount
+        FROM order_record as o,`user` as u
+        WHERE
+        o.user_id = u.id
+        AND u.flag = 0
+        AND o.order_status = 2
+        AND o.paid_time  <![CDATA[ >= ]]> #{startDate}
+        AND o.paid_time  <![CDATA[ <= ]]> #{endDate}
+        GROUP BY date_format(o.paid_time, '%Y-%m-%d')
+    </select>
+
+    <!-- 道具出售 -->
+    <select id="sumDayPropSale" resultType="java.math.BigDecimal">
+        SELECT
+        SUM(record.diamond_amount) as amount
+        FROM user_balance as record,`user` as u
+        WHERE
+        u.id = record.user_id
+        AND u.flag = 0
+        AND record.type = 1
+        AND record.remark = '道具出售'
+        AND record.add_time  <![CDATA[ >= ]]> #{startDate}
+        AND record.add_time  <![CDATA[ <= ]]> #{endDate}
+    </select>
+
+    <!-- 红包收入 -->
+    <select id="sumDayRed" resultType="com.csgo.domain.report.UserStoredSummaryDto">
+        SELECT
+        date_format(record.create_date,'%Y-%m-%d') as date,
+        SUM(record.amount) as amount
+        FROM red_envelop_record as record,`user` as u
+        WHERE
+        u.id = record.user_id
+        AND u.flag = 0
+        AND record.create_date  <![CDATA[ >= ]]> #{startDate}
+        AND record.create_date  <![CDATA[ <= ]]> #{endDate}
+        GROUP BY date_format(record.create_date, '%Y-%m-%d')
+    </select>
+
+    <!-- CDK收入 -->
+    <select id="sumDayCdk" resultType="com.csgo.domain.report.UserStoredSummaryDto">
+        SELECT
+        date_format(record.receive_date,'%Y-%m-%d') as date,
+        SUM(record.price) as amount
+        FROM activation_code as record,`user` as u
+        WHERE
+        u.id = record.user_id
+        AND u.flag = 0
+        AND record.receive_date  <![CDATA[ >= ]]> #{startDate}
+        AND record.receive_date  <![CDATA[ <= ]]> #{endDate}
+        GROUP BY date_format(record.receive_date, '%Y-%m-%d')
+    </select>
+
+    <!-- 商城兑换 -->
+    <select id="sumDayMallExchange" resultType="java.math.BigDecimal">
+        SELECT
+        SUM(record.diamond_amount) as amount
+        FROM user_balance as record,`user` as u
+        WHERE
+        u.id = record.user_id
+        AND u.flag = 0
+        AND record.type = 2
+        AND record.remark = '商城兑换'
+        AND record.add_time  <![CDATA[ >= ]]> #{startDate}
+        AND record.add_time  <![CDATA[ <= ]]> #{endDate}
+    </select>
+
+    <!-- 幸运宝箱 -->
+    <select id="sumDayLuckyBox" resultType="java.math.BigDecimal">
+        SELECT
+        SUM(record.amount + record.diamond_amount) as amount
+        FROM user_balance as record,`user` as u
+        WHERE
+        u.id = record.user_id
+        AND u.flag = 0
+        AND record.type = 2
+        AND record.remark = '幸运宝箱'
+        AND record.add_time  <![CDATA[ >= ]]> #{startDate}
+        AND record.add_time  <![CDATA[ <= ]]> #{endDate}
+    </select>
+
+    <!-- 商品道具出货统计表 -->
+    <select id="sumGoodShipment" resultType="com.csgo.domain.report.GoodShipmentSummaryDto">
+        SELECT
+            um.gift_product_id as productId,
+            um.product_name as productName,
+            count(pr.id) saleCount,
+            sum(um.money) as saleMoney
+        FROM
+            withdraw_pop_relate pr,
+            user_message um
+        WHERE
+            um.`id`= pr.`message_id`
+            AND pr.STATUS = 'RECEIPTED'
+            AND pr.ut  <![CDATA[ >= ]]> #{startDate}
+            AND pr.ut  <![CDATA[ <= ]]> #{endDate}
+        GROUP BY um.gift_product_id,um.product_name
+        ORDER BY saleCount DESC,saleMoney DESC,productId
+    </select>
+
+    <!-- IG平台道具发货统计表 -->
+    <select id="sumIgGoodDelivery" resultType="com.csgo.domain.report.GoodDeliverySummaryDto">
+        SELECT
+            um.gift_product_id as productId,
+            um.product_name as productName,
+            count(pr.id) saleCount,
+            IF(ROUND(sum(pr.zbt_price) / 6.5, 2)=0,0.01,ROUND(sum(pr.zbt_price) / 6.5, 2))  as igSaleMoney
+        FROM
+            withdraw_pop_relate pr,
+            user_message um
+        WHERE
+            um.`id`= pr.`message_id`
+            AND pr.STATUS = 'RECEIPTED'
+            AND pr.delivery_method = 'ig'
+            AND pr.ut  <![CDATA[ >= ]]> #{startDate}
+            AND pr.ut  <![CDATA[ <= ]]> #{endDate}
+        GROUP BY um.gift_product_id,um.product_name
+        ORDER BY saleCount DESC,productId
+    </select>
+
+    <!-- ZBT平台道具发货统计表 -->
+    <select id="sumZbtGoodDelivery" resultType="com.csgo.domain.report.GoodDeliverySummaryDto">
+        SELECT
+            um.gift_product_id as productId,
+            um.product_name as productName,
+            count(pr.id) saleCount,
+            IF(ROUND(sum(pr.zbt_price) / 6.5, 2)=0,0.01,ROUND(sum(pr.zbt_price) / 6.5, 2))  as igSaleMoney
+        FROM
+            withdraw_pop_relate pr,
+            user_message um
+        WHERE
+            um.`id`= pr.`message_id`
+            AND pr.STATUS = 'RECEIPTED'
+            AND pr.delivery_method = 'zbt'
+            AND pr.ut  <![CDATA[ >= ]]> #{startDate}
+            AND pr.ut  <![CDATA[ <= ]]> #{endDate}
+        GROUP BY um.gift_product_id,um.product_name
+        ORDER BY saleCount DESC,productId
+    </select>
+
+</mapper>

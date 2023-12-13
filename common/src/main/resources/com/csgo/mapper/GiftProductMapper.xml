@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.GiftProductMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.GiftProduct">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="gift_id" property="giftId" jdbcType="INTEGER"/>
+        <result column="within_probability" property="withinProbability" jdbcType="VARCHAR"/>
+        <result column="out_probability" property="outProbability" jdbcType="VARCHAR"/>
+        <result column="game_name" property="gameName" jdbcType="VARCHAR"/>
+        <result column="isdefault" property="isdefault" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="VARCHAR"/>
+        <result column="englishName" property="englishName" jdbcType="VARCHAR"/>
+        <result column="itemId" property="itemId" jdbcType="VARCHAR"/>
+        <result column="csgo_type" property="csgoType" jdbcType="VARCHAR"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , type, price, name, img, created_at, updated_at, gift_id, within_probability,
+    out_probability, isdefault, content,grade,englishName,itemId
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select a.id,
+               a.type,
+               a.price,
+               a.name,
+               a.img,
+               a.created_at,
+               a.updated_at,
+               a.gift_id,
+               a.within_probability,
+               a.out_probability,
+               a.isdefault,
+               a.content,
+               a.grade,
+               a.englishName,
+               a.itemId,
+               a.csgo_type
+        from gift_product a,
+             exchange_rate b
+        where a.id = #{id,jdbcType=INTEGER} and a.status='NORMAL'
+    </select>
+    <select id="getList" parameterType="com.csgo.domain.GiftProduct"
+            resultMap="BaseResultMap">
+
+        select
+        a.id, a.type, a.price , a.name, a.img, a.created_at, a.updated_at, a.gift_id, a.within_probability,
+        a.out_probability, a.isdefault, a.content,a.grade,a.englishName,a.itemId, a.csgo_type
+        from gift_product a,exchange_rate b
+
+        <where>
+            1=1 and a.status='NORMAL'
+            <if test="id != null">and a.id = #{id,jdbcType=BIGINT}</if>
+
+            <if test="type != null">and a.type = #{type,jdbcType=VARCHAR}</if>
+
+            <if test="price != null">and a.price = #{price,jdbcType=DECIMAL}</if>
+
+            <if test="name != null">and a.name like '%${name}%'</if>
+
+            <if test="img != null">and a.img = #{img,jdbcType=VARCHAR}</if>
+
+            <if test="createdAt != null">and a.created_at = #{createdAt,jdbcType=TIMESTAMP}</if>
+
+            <if test="updatedAt != null">and a.updated_at = #{updatedAt,jdbcType=TIMESTAMP}</if>
+
+            <if test="giftId != null">and a.gift_id = #{giftId,jdbcType=BIGINT}</if>
+
+            <if test="withinProbability != null">and a.within_probability = #{withinProbability,jdbcType=VARCHAR}</if>
+
+            <if test="outProbability != null">and a.out_probability = #{outProbability,jdbcType=VARCHAR}</if>
+
+            <if test="gameName != null">and a.game_name = #{gameName,jdbcType=VARCHAR}</if>
+
+            <if test="isdefault != null">and a.isdefault = #{isdefault,jdbcType=VARCHAR}</if>
+            <if test="grade != null">and a.grade = #{grade,jdbcType=VARCHAR}</if>
+
+            <if test="englishName != null">and a.englishName = #{englishName,jdbcType=VARCHAR}</if>
+
+            <if test="itemId != null">and a.itemId = #{itemId,jdbcType=VARCHAR}</if>
+
+        </where>
+
+        order by a.created_at desc
+
+    </select>
+
+    <select id="getListLt" parameterType="com.csgo.domain.GiftProduct"
+            resultMap="BaseResultMap">
+        select
+        a.id, a.type,a.csgo_type ,exterior_name as exteriorName,a.price,a.origin_amount as originAmount, a.name, a.img, a.created_at, a.updated_at, a.gift_id, a.within_probability,
+        a.out_probability, a.isdefault, a.content,a.grade,a.englishName,a.itemId
+        from gift_product a
+        <where>
+            1=1 and a.status='NORMAL'
+            <if test="id != null">and a.id = #{id,jdbcType=BIGINT}</if>
+
+            <if test="type != null">and a.type = #{type,jdbcType=VARCHAR}</if>
+
+            <if test="price != null">and a.price = #{price,jdbcType=DECIMAL}</if>
+
+            <if test="name != null">and a.name like '%${name}%'</if>
+
+            <if test="img != null">and a.img = #{img,jdbcType=VARCHAR}</if>
+
+            <if test="createdAt != null">and a.created_at = #{createdAt,jdbcType=TIMESTAMP}</if>
+
+            <if test="updatedAt != null">and a.updated_at = #{updatedAt,jdbcType=TIMESTAMP}</if>
+
+            <if test="giftId != null">and a.gift_id = #{giftId,jdbcType=BIGINT}</if>
+
+            <if test="withinProbability != null">and a.within_probability = #{withinProbability,jdbcType=VARCHAR}</if>
+
+            <if test="outProbability != null">and a.out_probability = #{outProbability,jdbcType=VARCHAR}</if>
+
+            <if test="gameName != null">and a.game_name = #{gameName,jdbcType=VARCHAR}</if>
+
+            <if test="isdefault != null">and a.isdefault = #{isdefault,jdbcType=VARCHAR}</if>
+            <if test="grade != null">and a.grade = #{grade,jdbcType=VARCHAR}</if>
+
+            <if test="englishName != null">and a.englishName = #{englishName,jdbcType=VARCHAR}</if>
+
+            <if test="itemId != null">and a.itemId = #{itemId,jdbcType=VARCHAR}</if>
+
+            <if test="csgoType != null">and a.csgo_type = #{csgoType,jdbcType=VARCHAR}</if>
+        </where>
+
+        order by a.created_at desc limit #{pageNum},#{pageSize}
+
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from gift_product
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.GiftProduct">
+        insert into gift_product (id, type, price,
+                                  name, img, created_at,
+                                  updated_at, gift_id, within_probability,
+                                  out_probability, isdefault, content, grade, englishName, itemId, csgo_type)
+        values (#{id,jdbcType=INTEGER}, #{type,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
+                #{name,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, #{createdAt,jdbcType=DATE},
+                #{updatedAt,jdbcType=DATE}, #{giftId,jdbcType=INTEGER}, #{withinProbability,jdbcType=VARCHAR},
+                #{outProbability,jdbcType=VARCHAR}, #{isdefault,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+                #{grade,jdbcType=VARCHAR}, #{englishName,jdbcType=VARCHAR}, #{itemId,jdbcType=VARCHAR}, #{csgoType,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.GiftProduct">
+        insert into gift_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="img != null">
+                img,
+            </if>
+            <if test="createdAt != null">
+                created_at,
+            </if>
+            <if test="updatedAt != null">
+                updated_at,
+            </if>
+            <if test="giftId != null">
+                gift_id,
+            </if>
+            <if test="withinProbability != null">
+                within_probability,
+            </if>
+            <if test="outProbability != null">
+                out_probability,
+            </if>
+            <if test="isdefault != null">
+                isdefault,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+
+            <if test="englishName != null">
+                englishName,
+            </if>
+
+            <if test="itemId != null">
+                itemId,
+            </if>
+            <if test="csgoType != null and csgoType !=''">
+                csgo_type,
+            </if>
+            <if test="exteriorName != null and exteriorName !=''">
+                exterior_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="img != null">
+                #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="createdAt != null">
+                #{createdAt,jdbcType=DATE},
+            </if>
+            <if test="updatedAt != null">
+                #{updatedAt,jdbcType=DATE},
+            </if>
+            <if test="giftId != null">
+                #{giftId,jdbcType=INTEGER},
+            </if>
+            <if test="withinProbability != null">
+                #{withinProbability,jdbcType=VARCHAR},
+            </if>
+            <if test="outProbability != null">
+                #{outProbability,jdbcType=VARCHAR},
+            </if>
+            <if test="isdefault != null">
+                #{isdefault,jdbcType=INTEGER},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+
+            <if test="englishName != null">
+                #{englishName,jdbcType=VARCHAR},
+            </if>
+
+            <if test="itemId != null">
+                #{itemId,jdbcType=VARCHAR},
+            </if>
+            <if test="csgoType != null and csgoType !=''">
+                #{csgoType,jdbcType=VARCHAR},
+            </if>
+            <if test="exteriorName != null and exteriorName !=''">
+                #{exteriorName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.GiftProduct">
+        update gift_product
+        set type               = #{type,jdbcType=VARCHAR},
+            price              = #{price,jdbcType=DECIMAL},
+            name               = #{name,jdbcType=VARCHAR},
+            img                = #{img,jdbcType=VARCHAR},
+            created_at         = #{createdAt,jdbcType=DATE},
+            updated_at         = #{updatedAt,jdbcType=DATE},
+            gift_id            = #{giftId,jdbcType=INTEGER},
+            within_probability = #{withinProbability,jdbcType=VARCHAR},
+            out_probability    = #{outProbability,jdbcType=VARCHAR},
+            content            = #{content,jdbcType=VARCHAR},
+            isdefault          = #{isdefault,jdbcType=INTEGER},
+            grade              = #{grade,jdbcType=VARCHAR},
+            englishName        = #{englishName,jdbcType=VARCHAR},
+            itemId             = #{itemId,jdbcType=VARCHAR},
+            csgo_type          = #{csgoType,jdbcType=VARCHAR},
+            product_kind       = #{productKind}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="pageList" resultMap="BaseResultMap">
+        select a.id, a.type, a.name, a.img, a.created_at, a.updated_at, a.gift_id, a.within_probability,b.is_recommend isRecommend,
+        a.out_probability, a.isdefault, a.content,a.grade,a.englishName,a.itemId,b.sort_id as sortId,b.img_url as imgUrl,b.price as price,
+        b.id as luckyId,update_time as updateTime,a.csgo_type as csgoTypeName,spt.id as typeId,spt.name as typeName
+        from gift_product a
+        <if test="csgoType!=null and csgoType!=''">
+        inner join (
+        select sp.key from sys_product_filter_category sp
+        where sp.key=#{csgoType} or sp.parent_key=#{csgoType}
+        ) sp on sp.key=a.csgo_type
+        </if>
+        INNER JOIN sys_lucky_product b on a.id=b.gift_product_id
+        left join sys_lucky_product_type spt on spt.id=b.type_id
+        <where>
+            a.status='NORMAL'
+            <if test="keywords!=null and keywords!=''">
+                and a.name like '%${keywords}%'
+            </if>
+            <if test="typeId!=null">
+               and spt.id=#{typeId}
+            </if>
+        </where>
+        order by b.sort_id desc,b.update_time desc
+    </select>
+
+    <select id="randomPageList" resultMap="BaseResultMap">
+        select a.id, a.type, a.name, a.img, a.created_at, a.updated_at, a.gift_id, a.within_probability,
+        a.out_probability, a.isdefault, a.content,a.grade,a.englishName,a.itemId,
+        b.probability as probability,b.img_url as imgUrl,b.price as price,
+        b.id as randomId,update_time as updateTime,a.csgo_type as csgoType
+        from gift_product a INNER JOIN sys_random_product b on a.id=gift_product_id
+        <where>
+            a.status='NORMAL'
+            <if test="keywords!=null and keywords!=''">
+                and a.name like '%${keywords}%'
+            </if>
+            <if test="csgoType!=null and csgoType!=''">
+                and a.csgo_type=#{csgoType}
+            </if>
+            <if test="luckyId != null">
+                and b.lucky_id=#{luckyId}
+            </if>
+        </where>
+        order by b.probability desc,b.update_time desc
+    </select>
+
+    <select id="pageProductList" resultMap="BaseResultMap">
+        select a.id, a.type, a.price, a.name, a.img, a.created_at, a.updated_at, a.gift_id, a.within_probability,
+        a.out_probability, a.isdefault, a.content,a.grade,a.englishName,a.itemId,a.csgo_type
+        from gift_product a,exchange_rate b WHERE 1=1 and a.status='NORMAL'
+        <if test="isLuckyProduct != null">
+            AND NOT EXISTS (SELECT 1 from sys_lucky_product WHERE gift_product_id=a.id)
+        </if>
+        <if test="keywords!=null and keywords!=''">
+            and a.name like '%${keywords}%'
+        </if>
+    </select>
+
+
+    <select id="getListByGiftId" resultMap="BaseResultMap">
+        select a.id,
+               a.price  as price,
+               a.name,
+               a.img
+        from gift_product a,
+             exchange_rate b
+        WHERE a.id IN (SELECT gift_product_id FROM gift_product_record WHERE gift_id = #{giftId}) and a.status='NORMAL'
+    </select>
+</mapper>

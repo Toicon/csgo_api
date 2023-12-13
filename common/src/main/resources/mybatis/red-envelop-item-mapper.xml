@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.envelop.RedEnvelopItemMapper">
+
+    <select id="findAll" resultType="com.csgo.domain.plus.envelop.RedEnvelopItemDTO">
+        SELECT ri.*, r.auto,r.show_num FROM red_envelop_item ri
+        INNER JOIN red_envelop r ON r.id = ri.envelop_id
+        WHERE ri.status = 'NORMAL' and r.grade is null
+        ORDER BY r.sort_id DESC,ri.effective_end_time desc
+    </select>
+</mapper>

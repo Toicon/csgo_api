@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.blind.BlindBoxPlusMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.blind.SearchBlindBoxCondition" resultType="com.csgo.domain.plus.blind.BlindBoxDTO">
+        SELECT (SELECT COUNT(id) FROM blind_box_product WHERE blind_box_id = b.id) productCount,
+        b.*,bt.name typeName FROM blind_box b INNER JOIN blind_box_type bt ON b.type_id = bt.id
+        <where>
+            <if test="condition.keywords!=null and condition.keywords!=''">
+                and b.name like '%${condition.keywords}%'
+            </if>
+            <if test="condition.typeId!=null">
+                and b.type_id=#{condition.typeId}
+            </if>
+        </where>
+        order by b.sort_id desc,b.update_time desc
+    </select>
+
+    <select id="findByTypeId" resultType="com.csgo.domain.plus.blind.BlindBoxDTO">
+        SELECT (SELECT COUNT(id) FROM blind_box_product WHERE blind_box_id = b.id) productCount,
+        b.*,bt.name typeName FROM blind_box b INNER JOIN blind_box_type bt ON b.type_id = bt.id
+        <where>
+            <if test="typeId!=null">
+                and b.type_id=#{typeId}
+            </if>
+        </where>
+        order by b.type asc, b.sort_id desc,b.update_time desc
+    </select>
+</mapper>

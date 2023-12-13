@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.BlindBoxTurnMapper">
+
+    <select id="getUserBalanceByRoomNum" resultType="com.csgo.domain.user.User">
+        SELECT bt.user_id id, u.balance
+        FROM blind_box_turn bt
+                 INNER JOIN `user` u ON bt.user_id = u.id
+        WHERE room_num = #{roomNum}
+        GROUP BY user_id
+    </select>
+
+
+    <select id="getUserImgByRoomNum" resultType="com.csgo.domain.user.UserRoomImgDTO">
+        SELECT u.img, u.id userId
+        FROM blind_box_turn bt
+                 INNER JOIN `user` u ON bt.user_id = u.id
+        WHERE room_num = #{roomNum}
+        GROUP BY user_id
+    </select>
+
+    <update id="updateByGiftProductId">
+        update blind_box_turn
+        set price = #{price}
+        where product_id = #{giftProductId}
+    </update>
+
+</mapper>

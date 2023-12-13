@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.BlindBoxRoomMapper">
+
+    <select id="getBoxRoomByRoomNum" resultType="com.csgo.domain.BlindBoxRoom">
+        SELECT br.id,
+               br.user_id        userId,
+               br.room_num       roomNum,
+               br.random_num     randomNum,
+               br.seat,
+               br.start_time     startTime,
+               br.person_pattern personPattern,
+               br.blind_box_num  blindBoxNum,
+               br.price,
+               br.status,
+               br.integral,
+               br.current_turn   currentTurn,
+               br.current_num    currentNum,
+               br.add_time       addTime,
+               br.update_time    updateTime
+        FROM blind_box_room br
+        WHERE room_num = #{roomNum}
+    </select>
+
+    <select id="pageList" resultType="com.csgo.domain.BlindBoxRoom">
+        SELECT br.id,br.user_id userId,br.room_num roomNum,br.random_num randomNum,br.seat,br.start_time startTime,
+        br.person_pattern personPattern, br.blind_box_num blindBoxNum, br.price, br.status, br.integral,
+        br.current_num currentNum,br.add_time addTime,br.update_time updateTime,
+        u.img,u.name FROM blind_box_room br INNER JOIN `user` u ON br.user_id = u.id
+        <where>
+            <if test="keywords != null and keywords != ''">
+                AND (br.room_num LIKE CONCAT('%',#{keywords},'%') OR u.name LIKE CONCAT('%',#{keywords},'%') )
+            </if>
+            <if test="status != null">
+                AND br.status = #{status}
+            </if>
+            <if test="start_time != null">
+                AND unix_timestamp(br.add_time) > #{start_time}
+            </if>
+            <if test="end_time != null">
+                AND #{end_time} > unix_timestamp(br.add_time)
+            </if>
+        </where>
+        ORDER BY br.id DESC
+    </select>
+
+
+    <select id="pageRoomList" resultType="com.csgo.domain.BlindBoxRoom">
+        SELECT br.id,
+               br.room_num         roomNum,
+               br.blind_box_num    blindBoxNum,
+               br.price,
+               br.status,
+               br.person_pattern   personPattern,
+               br.victory_user_ids victoryUserIds
+        FROM blind_box_room br
+                 INNER JOIN `user` u ON br.user_id = u.id
+        ORDER BY br.update_time, field(br.status, 0, -1, 2) DESC
+    </select>
+
+    <select id="pageRoomHistoryList" resultType="com.csgo.domain.BlindBoxRoom">
+        SELECT br.id,br.room_num roomNum, start_time startTime, integral,br.status,br.victory_status victoryStatus,br.victory_user_ids victoryUserIds
+        FROM blind_box_room br WHERE br.status != 0 AND br.status != 3
+        <if test="userId != null">
+            AND FIND_IN_SET(#{userId},br.room_user_ids)
+        </if>
+        ORDER BY br.update_time DESC
+    </select>
+
+
+    <select id="getBestBattlePointsInHistory" resultType="com.csgo.domain.BlindBoxRoom">
+        SELECT start_time startTime, integral
+        FROM blind_box_room br WHERE br.status != 0 AND br.status != 3
+        AND FIND_IN_SET(#{userId},br.room_user_ids)
+        <if test="isToday != null">
+            AND DATE_FORMAT(start_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        </if>
+        ORDER BY br.integral DESC LIMIT 1
+    </select>
+
+
+    <insert id="addBatch" useGeneratedKeys="true" keyProperty="id">
+        insert into blind_box_room
+        (room_num,random_num,user_id,seat,person_pattern,blind_box_num,price,status,current_num,add_time,update_time)
+        values
+        <foreach collection="blindBoxRoomList" separator="," item="blindBoxRoom">
+            (#{blindBoxRoom.roomNum,jdbcType=VARCHAR},
+            #{blindBoxRoom.randomNum,jdbcType=VARCHAR},
+            #{blindBoxRoom.userId,jdbcType=INTEGER},
+            #{blindBoxRoom.seat,jdbcType=INTEGER},
+            #{blindBoxRoom.personPattern,jdbcType=INTEGER},
+            #{blindBoxRoom.blindBoxNum,jdbcType=INTEGER},
+            #{blindBoxRoom.price,jdbcType=DECIMAL},
+            #{blindBoxRoom.status,jdbcType=INTEGER},
+            #{blindBoxRoom.currentNum,jdbcType=INTEGER},
+            NOW(),
+            NOW())
+        </foreach>
+    </insert>
+
+
+    <delete id="deleteById" parameterType="int">
+        DELETE
+        FROM blind_box_room
+        WHERE id = #{id}
+    </delete>
+
+
+    <update id="updateRoomStatus">
+        UPDATE blind_box_room
+        SET `status`    = 2,
+            update_time = NOW()
+        WHERE unix_timestamp(NOW()) - unix_timestamp(start_time) > blind_box_num * 5
+          AND `status` = -1
+    </update>
+
+
+    <update id="updateWaitRoomStatus">
+        UPDATE blind_box_room
+        SET `status`    = 3,
+            update_time = NOW()
+        WHERE unix_timestamp(NOW()) - unix_timestamp(update_time) > 180
+          AND `status` = 0
+          AND id = #{id}
+    </update>
+
+    <update id="compulsoryUpdateWaitRoomStatus">
+        UPDATE blind_box_room
+        SET `status`    = 3,
+            update_time = NOW()
+        WHERE `status` = 0
+          AND id = #{id}
+    </update>
+
+
+    <select id="getWaitRoomList" resultType="com.csgo.domain.BlindBoxRoom">
+        SELECT br.id,
+               br.user_id        userId,
+               br.room_num       roomNum,
+               br.random_num     randomNum,
+               br.seat,
+               br.start_time     startTime,
+               br.person_pattern personPattern,
+               br.blind_box_num  blindBoxNum,
+               br.price,
+               br.status,
+               br.integral,
+               br.current_turn   currentTurn,
+               br.current_num    currentNum,
+               br.add_time       addTime,
+               br.update_time    updateTime
+        FROM blind_box_room br
+        WHERE unix_timestamp(NOW()) - unix_timestamp(update_time) > 180
+          AND `status` = 0
+    </select>
+
+</mapper>

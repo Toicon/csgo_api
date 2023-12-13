@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.UserPrizeMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.user.UserPrize">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="game_name" property="gameName" jdbcType="VARCHAR"/>
+        <result column="gift_id" property="giftId" jdbcType="INTEGER"/>
+        <result column="gift_type" property="giftType" jdbcType="VARCHAR"/>
+        <result column="gift_product_id" property="giftProductId" jdbcType="VARCHAR"/>
+        <result column="gift_product_name" property="giftProductName" jdbcType="VARCHAR"/>
+        <result column="gift_product_img" property="giftProductImg" jdbcType="VARCHAR"/>
+        <result column="userNameQ" property="userNameQ" jdbcType="VARCHAR"/>
+        <result column="giftName" property="giftName" jdbcType="VARCHAR"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="ct" property="ct" jdbcType="VARCHAR"/>
+        <result column="gift_grade" property="gift_grade" jdbcType="VARCHAR"/>
+        <result column="giftprice" jdbcType="DECIMAL" property="giftprice"/>
+        <result column="gift_grade_g" property="gift_grade_g" jdbcType="VARCHAR"/>
+        <result column="gift_password" property="gift_password" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , user_id, user_name, game_name, gift_id, gift_type, gift_product_id, gift_product_name,
+    gift_product_img, ct,gift_grade,price,giftName,userNameQ,giftprice,userImg,gift_grade_g
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from user_prize
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from user_prize
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.user.UserPrize">
+        insert into user_prize (id, user_id, user_name,
+                                game_name, gift_id, gift_type,
+                                gift_product_id, gift_product_name, gift_product_img,
+                                ct, gift_grade, price, giftName, userNameQ, giftprice, gift_grade_g)
+        values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR},
+                #{gameName,jdbcType=VARCHAR}, #{giftId,jdbcType=INTEGER}, #{giftType,jdbcType=VARCHAR},
+                #{giftProductId,jdbcType=VARCHAR}, #{giftProductName,jdbcType=VARCHAR}, #{giftProductImg,jdbcType=VARCHAR},
+                #{ct,jdbcType=VARCHAR}, #{gift_grade,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{giftName,jdbcType=VARCHAR},
+                #{userNameQ,jdbcType=VARCHAR}, #{giftprice,jdbcType=DECIMAL}, #{gift_grade_g,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.user.UserPrize">
+        insert into user_prize
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="gameName != null">
+                game_name,
+            </if>
+            <if test="giftId != null">
+                gift_id,
+            </if>
+            <if test="giftType != null">
+                gift_type,
+            </if>
+            <if test="giftProductId != null">
+                gift_product_id,
+            </if>
+            <if test="giftProductName != null">
+                gift_product_name,
+            </if>
+            <if test="giftProductImg != null">
+                gift_product_img,
+            </if>
+            <if test="ct != null">
+                ct,
+            </if>
+            <if test="gift_grade != null">
+                gift_grade,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="giftName != null">
+                giftName,
+            </if>
+            <if test="userNameQ != null">
+                userNameQ,
+            </if>
+            <if test="giftprice != null">
+                giftprice,
+            </if>
+            <if test="gift_grade != null">
+                gift_grade,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="gameName != null">
+                #{gameName,jdbcType=VARCHAR},
+            </if>
+            <if test="giftId != null">
+                #{giftId,jdbcType=INTEGER},
+            </if>
+            <if test="giftType != null">
+                #{giftType,jdbcType=VARCHAR},
+            </if>
+            <if test="giftProductId != null">
+                #{giftProductId,jdbcType=VARCHAR},
+            </if>
+            <if test="giftProductName != null">
+                #{giftProductName,jdbcType=VARCHAR},
+            </if>
+            <if test="giftProductImg != null">
+                #{giftProductImg,jdbcType=VARCHAR},
+            </if>
+            <if test="ct != null">
+                #{ct,jdbcType=VARCHAR},
+            </if>
+            <if test="gift_grade != null">
+                #{gift_grade,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="giftName != null">
+                #{giftName,jdbcType=VARCHAR},
+            </if>
+            <if test="userNameQ != null">
+                #{userNameQ,jdbcType=VARCHAR},
+            </if>
+            <if test="giftprice != null">
+                #{giftprice,jdbcType=DECIMAL},
+            </if>
+            <if test="gift_grade_g != null">
+                #{gift_grade_g,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.user.UserPrize">
+        update user_prize
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="gameName != null">
+                game_name = #{gameName,jdbcType=VARCHAR},
+            </if>
+            <if test="giftId != null">
+                gift_id = #{giftId,jdbcType=INTEGER},
+            </if>
+            <if test="giftType != null">
+                gift_type = #{giftType,jdbcType=VARCHAR},
+            </if>
+            <if test="giftProductId != null">
+                gift_product_id = #{giftProductId,jdbcType=VARCHAR},
+            </if>
+            <if test="giftProductName != null">
+                gift_product_name = #{giftProductName,jdbcType=VARCHAR},
+            </if>
+            <if test="giftProductImg != null">
+                gift_product_img = #{giftProductImg,jdbcType=VARCHAR},
+            </if>
+            <if test="ct != null">
+                ct = #{ct,jdbcType=VARCHAR},
+            </if>
+            <if test="gift_grade != null">
+                gift_grade = #{gift_grade,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="giftName != null">
+                giftName = #{giftName,jdbcType=VARCHAR},
+            </if>
+            <if test="userNameQ != null">
+                userNameQ = #{userNameQ,jdbcType=VARCHAR},
+            </if>
+            <if test="giftprice != null">
+                giftprice = #{giftprice,jdbcType=DECIMAL},
+            </if>
+            <if test="gift_grade_g != null">
+                gift_grade_g = #{gift_grade_g,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.user.UserPrize">
+        update user_prize
+        set user_id           = #{userId,jdbcType=INTEGER},
+            user_name         = #{userName,jdbcType=VARCHAR},
+            game_name         = #{gameName,jdbcType=VARCHAR},
+            gift_id           = #{giftId,jdbcType=INTEGER},
+            gift_type         = #{giftType,jdbcType=VARCHAR},
+            gift_product_id   = #{giftProductId,jdbcType=VARCHAR},
+            gift_product_name = #{giftProductName,jdbcType=VARCHAR},
+            gift_product_img  = #{giftProductImg,jdbcType=VARCHAR},
+            ct                = #{ct,jdbcType=VARCHAR},
+            gift_grade        = #{gift_grade,jdbcType=VARCHAR},
+            price             = #{price,jdbcType=DECIMAL},
+            giftName          = #{giftName,jdbcType=VARCHAR},
+            userNameQ         = #{userNameQ,jdbcType=VARCHAR},
+            giftprice         = #{giftprice,jdbcType=DECIMAL},
+            gift_grade_g      = #{gift_grade_g,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="getList" parameterType="com.csgo.domain.user.UserPrize" resultMap="BaseResultMap">
+        select * from user_prize
+        <where>
+            1=1
+            <if test="userId != null">
+                and user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="userName != null">
+                and (user_name like '%${userName}%' || giftName like '%${userName}%' || userNameQ like '%${userName}%' || gift_product_name like '%${userName}%')
+            </if>
+            <if test="gameName != null">
+                and game_name = #{gameName,jdbcType=VARCHAR}
+            </if>
+            <if test="giftId != null">
+                and gift_id = #{giftId,jdbcType=INTEGER}
+            </if>
+            <if test="giftType != null">
+                and gift_type = #{giftType,jdbcType=VARCHAR}
+            </if>
+            <if test="giftProductId != null">
+                and gift_product_id = #{giftProductId,jdbcType=VARCHAR}
+            </if>
+            <if test="giftProductName != null">
+                and gift_product_name like '%${giftProductName}%'
+            </if>
+            <if test="giftProductImg != null">
+                and gift_product_img = #{giftProductImg,jdbcType=VARCHAR}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=VARCHAR}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="gift_grade != null">
+                and gift_grade != #{gift_grade,jdbcType=VARCHAR}
+            </if>
+            <if test="giftprice != null">
+                and giftprice = #{giftprice,jdbcType=DECIMAL},
+            </if>
+            <if test="gift_grade_g != null">
+                and gift_grade_g = #{gift_grade_g,jdbcType=VARCHAR},
+            </if>
+        </where>
+        order by ct desc
+    </select>
+
+
+    <select id="getListLt" parameterType="com.csgo.domain.user.UserPrize" resultMap="BaseResultMap">
+        select a.*,b.img as userImg,g.gift_password as gift_password from user_prize a,user b,gift g
+        <where>
+            a.user_id = b.id and a.gift_id = g.id
+            <if test="userId != null">
+                and a.user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="userName != null">
+                and (a.user_name like '%${userName}%' || a.giftName like '%${userName}%' || a.userNameQ like '%${userName}%' || a.gift_product_name like '%${userName}%')
+            </if>
+            <if test="gameName != null">
+                and a.game_name = #{gameName,jdbcType=VARCHAR}
+            </if>
+            <if test="giftId != null">
+                and a.gift_id = #{giftId,jdbcType=INTEGER}
+            </if>
+            <if test="giftType != null">
+                and a.gift_type = #{giftType,jdbcType=VARCHAR}
+            </if>
+            <if test="giftProductId != null">
+                and a.gift_product_id = #{giftProductId,jdbcType=VARCHAR}
+            </if>
+            <if test="giftProductName != null">
+                and a.gift_product_name like '%${giftProductName}%'
+            </if>
+            <if test="giftProductImg != null">
+                and a.gift_product_img = #{giftProductImg,jdbcType=VARCHAR}
+            </if>
+            <if test="ct != null">
+                and a.ct = #{ct,jdbcType=VARCHAR}
+            </if>
+            <if test="id != null">
+                and a.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="gift_grade != null">
+                and a.gift_grade != #{gift_grade,jdbcType=VARCHAR}
+            </if>
+            <if test="giftprice != null">
+                and a.giftprice = #{giftprice,jdbcType=DECIMAL}
+            </if>
+            <if test="gift_grade_g != null">
+                and gift_grade_g = #{gift_grade_g,jdbcType=VARCHAR},
+            </if>
+        </where>
+        order by a.ct desc
+        limit #{pageNum},#{pageSize}
+
+    </select>
+
+    <select id="rewardPage" resultType="com.csgo.domain.plus.user.UserRewardDTO">
+        select
+        tmp.rewardType,
+        tmp.rewardImg,
+        tmp.rewardName,
+        tmp.rewardDate
+        from
+        (
+        select
+        1 as rewardType,
+        p.img as rewardImg,
+        (
+        case
+        when record.product_type= 'PRODUCT' then record.product_name
+        when record.product_type= 'VB' then CONCAT(record.price,"V币")
+        else ''
+        end
+        ) as rewardName,
+        record.receive_date as rewardDate
+        FROM
+        activation_code as record
+        LEFT JOIN gift_product p on record.gift_product_id = p.id
+        WHERE
+        record.user_id = #{condition.userId}
+        UNION ALL
+        select
+        2 as rewardType,
+        '' as rewardImg,
+        CONCAT(record.amount,"V币") as rewardName,
+        record.create_date as rewardDate
+        FROM
+        red_envelop_record as record
+        WHERE
+        record.user_id = #{condition.userId}
+        UNION ALL
+        SELECT
+        3 as rewardType,
+        '' as rewardImg,
+        CONCAT(SUM(commission_amount),"V币") as rewardName,
+        settlement_time as rewardDate
+        FROM
+        user_commission_log
+        WHERE
+        commission_user_id = #{condition.userId}
+        AND grade = 1
+        AND status = 2
+        GROUP BY
+        commission_user_id,
+        settlement_time
+        UNION ALL
+        select
+        3 as rewardType,
+        '' as rewardImg,
+        CONCAT(extra_price,"V币") as rewardName,
+        paid_time as rewardDate
+        from
+        order_record
+        where
+        user_id = #{condition.userId}
+        and order_status = 2
+        and extra_price is not null
+        and extra_price != 0
+        ) as tmp
+        <where>
+            <if test="condition.rewardType != null">
+                AND tmp.rewardType = #{condition.rewardType}
+            </if>
+        </where>
+        ORDER BY tmp.rewardDate DESC
+    </select>
+
+</mapper>

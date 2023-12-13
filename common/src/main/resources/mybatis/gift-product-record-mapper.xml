@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.gift.GiftProductRecordPlusMapper">
+
+    <select id="findAllProductId" resultType="java.lang.Integer">
+        SELECT bp.gift_product_id
+        FROM gift_product_record bp
+        group by bp.gift_product_id
+    </select>
+
+    <select id="findExistGiftKeyGiftId" resultType="java.lang.Integer">
+        SELECT DISTINCT pr.gift_id
+        FROM gift_product_record pr
+                 INNER JOIN gift_product p ON pr.gift_product_id = p.id
+        WHERE p.product_kind = 1
+    </select>
+
+</mapper>

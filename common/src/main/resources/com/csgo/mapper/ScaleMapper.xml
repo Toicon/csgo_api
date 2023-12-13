@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.ScaleMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.Scale">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="scale" property="scale" jdbcType="DECIMAL"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , scale, ct, ut
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from scale
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from scale
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.Scale">
+        insert into scale (id, scale, ct,
+                           ut)
+        values (#{id,jdbcType=INTEGER}, #{scale,jdbcType=DECIMAL}, #{ct,jdbcType=TIMESTAMP},
+                #{ut,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.Scale">
+        insert into scale
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="scale != null">
+                scale,
+            </if>
+            <if test="ct != null">
+                ct,
+            </if>
+            <if test="ut != null">
+                ut,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="scale != null">
+                #{scale,jdbcType=DECIMAL},
+            </if>
+            <if test="ct != null">
+                #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                #{ut,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.Scale">
+        update scale
+        <set>
+            <if test="scale != null">
+                scale = #{scale,jdbcType=DECIMAL},
+            </if>
+            <if test="ct != null">
+                ct = #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.Scale">
+        update scale
+        set scale = #{scale,jdbcType=DECIMAL},
+            ct    = #{ct,jdbcType=TIMESTAMP},
+            ut    = #{ut,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectList" parameterType="com.csgo.domain.Scale" resultMap="BaseResultMap">
+        select * from scale
+        <where>
+            1=1
+            <if test="scale != null">
+                and scale = #{scale,jdbcType=DECIMAL}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        order by ct desc
+    </select>
+</mapper>

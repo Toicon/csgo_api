@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.GiftCountMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.GiftCount">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="gift_id" property="giftId" jdbcType="INTEGER"/>
+        <result column="countfive" property="countfive" jdbcType="INTEGER"/>
+        <result column="counttwo" property="counttwo" jdbcType="INTEGER"/>
+        <result column="countthree" property="countthree" jdbcType="INTEGER"/>
+        <result column="countfour" property="countfour" jdbcType="INTEGER"/>
+
+        <result column="counttwoWithin" property="counttwoWithin" jdbcType="INTEGER"/>
+        <result column="countthreeWithin" property="countthreeWithin" jdbcType="INTEGER"/>
+        <result column="countfourWithin" property="countfourWithin" jdbcType="INTEGER"/>
+        <result column="countfiveWithin" property="countfiveWithin" jdbcType="INTEGER"/>
+
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , gift_id, countfive, counttwo, countthree, countfour,counttwoWithin,countthreeWithin,countfourWithin,countfiveWithin, ct, ut
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from gift_count
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from gift_count
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.GiftCount">
+        insert into gift_count (id, gift_id, countfive,
+                                counttwo, countthree, countfour, counttwoWithin, countthreeWithin,
+                                ct, ut)
+        values (#{id,jdbcType=INTEGER}, #{giftId,jdbcType=INTEGER}, #{countfive,jdbcType=INTEGER},
+                #{counttwo,jdbcType=INTEGER}, #{countthree,jdbcType=INTEGER}, #{countfour,jdbcType=INTEGER},
+                #{counttwoWithin,jdbcType=INTEGER}, #{countthreeWithin,jdbcType=INTEGER}, #{countfourWithin,jdbcType=INTEGER},
+                #{countfiveWithin,jdbcType=INTEGER},
+                #{ct,jdbcType=TIMESTAMP}, #{ut,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.GiftCount">
+        insert into gift_count
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="giftId != null">
+                gift_id,
+            </if>
+            <if test="countfive != null">
+                countfive,
+            </if>
+            <if test="counttwo != null">
+                counttwo,
+            </if>
+            <if test="countthree != null">
+                countthree,
+            </if>
+            <if test="countfour != null">
+                countfour,
+            </if>
+            <if test="counttwoWithin != null">
+                counttwoWithin,
+            </if>
+            <if test="countthreeWithin != null">
+                countthreeWithin,
+            </if>
+            <if test="countfourWithin != null">
+                countfourWithin,
+            </if>
+            <if test="countfiveWithin != null">
+                countfiveWithin,
+            </if>
+            <if test="ct != null">
+                ct,
+            </if>
+            <if test="ut != null">
+                ut,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="giftId != null">
+                #{giftId,jdbcType=INTEGER},
+            </if>
+            <if test="countfive != null">
+                #{countfive,jdbcType=INTEGER},
+            </if>
+            <if test="counttwo != null">
+                #{counttwo,jdbcType=INTEGER},
+            </if>
+            <if test="countthree != null">
+                #{countthree,jdbcType=INTEGER},
+            </if>
+            <if test="countfour != null">
+                #{countfour,jdbcType=INTEGER},
+            </if>
+            <if test="counttwoWithin != null">
+                #{counttwoWithin,jdbcType=INTEGER},
+            </if>
+            <if test="countthreeWithin != null">
+                #{countthreeWithin,jdbcType=INTEGER},
+            </if>
+            <if test="countfourWithin != null">
+                #{countfourWithin,jdbcType=INTEGER},
+            </if>
+            <if test="countfiveWithin != null">
+                #{countfiveWithin,jdbcType=INTEGER},
+            </if>
+            <if test="ct != null">
+                #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                #{ut,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.GiftCount">
+        update gift_count
+        <set>
+            <if test="giftId != null">
+                gift_id = #{giftId,jdbcType=INTEGER},
+            </if>
+            <if test="countfive != null">
+                countfive = #{countfive,jdbcType=INTEGER},
+            </if>
+            <if test="counttwo != null">
+                counttwo = #{counttwo,jdbcType=INTEGER},
+            </if>
+            <if test="countthree != null">
+                countthree = #{countthree,jdbcType=INTEGER},
+            </if>
+            <if test="countfour != null">
+                countfour = #{countfour,jdbcType=INTEGER},
+            </if>
+            <if test="counttwoWithin != null">
+                counttwoWithin = #{counttwoWithin,jdbcType=INTEGER},
+            </if>
+            <if test="countthreeWithin != null">
+                countthreeWithin = #{countthreeWithin,jdbcType=INTEGER},
+            </if>
+            <if test="countfourWithin != null">
+                countfourWithin = #{countfourWithin,jdbcType=INTEGER},
+            </if>
+            <if test="countfiveWithin != null">
+                countfiveWithin = #{countfiveWithin,jdbcType=INTEGER},
+            </if>
+            <if test="ct != null">
+                ct = #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.GiftCount">
+        update gift_count
+        set gift_id          = #{giftId,jdbcType=INTEGER},
+            countfive        = #{countfive,jdbcType=INTEGER},
+            counttwo         = #{counttwo,jdbcType=INTEGER},
+            countthree       = #{countthree,jdbcType=INTEGER},
+            countfour        = #{countfour,jdbcType=INTEGER},
+            counttwoWithin   = #{counttwoWithin,jdbcType=INTEGER},
+            countthreeWithin = #{countthreeWithin,jdbcType=INTEGER},
+            countfourWithin  = #{countfourWithin,jdbcType=INTEGER},
+            countfiveWithin  = #{countfiveWithin,jdbcType=INTEGER},
+            ct               = #{ct,jdbcType=TIMESTAMP},
+            ut               = #{ut,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="getOnt" parameterType="com.csgo.domain.GiftCount" resultMap="BaseResultMap">
+        select * from gift_count
+        <where>
+            1 = 1
+            <if test="giftId != null">
+                and gift_id = #{giftId}
+            </if>
+        </where>
+        limit 0,1
+    </select>
+</mapper>

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.UserMessageGiftMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.user.UserMessageGift">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_message_id" property="userMessageId" jdbcType="INTEGER"/>
+        <result column="gift_product_id" property="giftProductId" jdbcType="INTEGER"/>
+        <result column="state" property="state" jdbcType="INTEGER"/>
+        <result column="money" property="money" jdbcType="DECIMAL"/>
+        <result column="sell_money" property="sellMoney" jdbcType="DECIMAL"/>
+        <result column="zbk_money" property="zbkMoney" jdbcType="DECIMAL"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+        <result column="zbk_date" property="zbkDate" jdbcType="VARCHAR"/>
+        <result column="game_name" property="gameName" jdbcType="VARCHAR"/>
+        <result column="gift_type" property="giftType" jdbcType="VARCHAR"/>
+        <result column="gift_product_name" property="giftProductName" jdbcType="VARCHAR"/>
+        <result column="transactionlink" property="transactionlink" jdbcType="VARCHAR"/>
+        <result column="orderId" property="orderId" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , user_message_id, gift_product_id, state, money, sell_money, img, user_id, ct,
+    ut,zbk_date,phone,game_name,gift_type,gift_product_name,transactionlink,zbk_money,orderId
+    </sql>
+    <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="com.csgo.domain.user.UserMessageGift">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message_gift
+        where 1 = 1
+        <if test="orderId != null">
+            and orderId = #{orderId,jdbcType=VARCHAR}
+        </if>
+        <if test="userMessageId != null">
+            and user_message_id = #{userMessageId}
+        </if>
+    </select>
+    <select id="selectByGiftProductIds" resultMap="BaseResultMap">
+        select distinct
+        <include refid="Base_Column_List"/>
+        from user_message_gift
+        where gift_product_id in
+        <foreach collection="giftProductIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        order by ct desc
+        limit 0,30
+    </select>
+
+    <select id="selectListBytoday" parameterType="com.csgo.domain.user.UserMessageGift" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message_gift
+        where 1 = 1
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="state != null">
+            and (state = 2 or state = 3)
+        </if>
+        <if test="zbkDate != null">
+            and zbk_date = #{zbkDate,jdbcType=VARCHAR}
+        </if>
+        <if test="ut != null">
+            and DATE_FORMAT(#{ut}, '%Y-%m-%d') = DATE_FORMAT(ut, '%Y-%m-%d')
+        </if>
+        order by ct desc
+    </select>
+
+    <select id="selectList" parameterType="com.csgo.domain.user.UserMessageGift" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message_gift
+        where 1 = 1
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="state != null">
+            and state = #{state,jdbcType=INTEGER}
+        </if>
+        <if test="userMessageId != null">
+            and user_message_id = #{userMessageId,jdbcType=INTEGER}
+        </if>
+        <if test="transactionlink != null">
+            and transactionlink = #{transactionlink,jdbcType=VARCHAR}
+        </if>
+        <if test="orderId != null">
+            and orderId = #{orderId,jdbcType=VARCHAR}
+        </if>
+        <if test="zbkDate != null">
+            and zbk_date = #{zbkDate,jdbcType=VARCHAR}
+        </if>
+        <if test="st_time != null">
+            and (DATE_FORMAT(ut, '%Y-%m-%d') > DATE_FORMAT(#{st_time}, '%Y-%m-%d')|| DATE_FORMAT(#{st_time}, '%Y-%m-%d')
+            = DATE_FORMAT(ut, '%Y-%m-%d'))
+        </if>
+        <if test="ed_time != null">
+            and (DATE_FORMAT(#{ed_time}, '%Y-%m-%d') > DATE_FORMAT(ut, '%Y-%m-%d') || DATE_FORMAT(#{ed_time},
+            '%Y-%m-%d') = DATE_FORMAT(ut, '%Y-%m-%d'))
+        </if>
+        order by ct desc
+        limit #{pageNum},#{pageSize}
+    </select>
+
+    <select id="selectListTq" parameterType="com.csgo.domain.user.UserMessageGift" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message_gift
+        where (state = 3 or state = 2)
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="giftProductName != null">
+            and (gift_product_name like '%${giftProductName}%' || phone like '%${giftProductName}%')
+        </if>
+        <if test="phone != null">
+            and phone like '%${phone}%'
+        </if>
+        <if test="orderId != null">
+            and orderId = #{orderId,jdbcType=VARCHAR}
+        </if>
+        <if test="st_time != null">
+            and (DATE_FORMAT(ut, '%Y-%m-%d') > DATE_FORMAT(#{st_time}, '%Y-%m-%d')|| DATE_FORMAT(#{st_time}, '%Y-%m-%d')
+            = DATE_FORMAT(ut, '%Y-%m-%d'))
+        </if>
+        <if test="ed_time != null">
+            and (DATE_FORMAT(#{ed_time}, '%Y-%m-%d') > DATE_FORMAT(ut, '%Y-%m-%d') || DATE_FORMAT(#{ed_time},
+            '%Y-%m-%d') = DATE_FORMAT(ut, '%Y-%m-%d'))
+        </if>
+        order by state desc,ct desc
+        limit #{pageNum},#{pageSize}
+    </select>
+
+
+    <select id="selectListTqWfy" parameterType="com.csgo.domain.user.UserMessageGift"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message_gift
+        where (state = 3 or state = 2)
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="giftProductName != null">
+            and (gift_product_name like '%${giftProductName}%' || phone like '%${giftProductName}%')
+        </if>
+        <if test="phone != null">
+            and phone like '%${phone}%'
+        </if>
+        <if test="orderId != null">
+            and orderId = #{orderId,jdbcType=VARCHAR}
+        </if>
+        <if test="st_time != null">
+            and (DATE_FORMAT(ut, '%Y-%m-%d') > DATE_FORMAT(#{st_time}, '%Y-%m-%d')|| DATE_FORMAT(#{st_time}, '%Y-%m-%d')
+            = DATE_FORMAT(ut, '%Y-%m-%d'))
+        </if>
+        <if test="ed_time != null">
+            and (DATE_FORMAT(#{ed_time}, '%Y-%m-%d') > DATE_FORMAT(ut, '%Y-%m-%d') || DATE_FORMAT(#{ed_time},
+            '%Y-%m-%d') = DATE_FORMAT(ut, '%Y-%m-%d'))
+        </if>
+        order by state desc,ct desc
+    </select>
+
+
+    <select id="selectListBys" parameterType="com.csgo.domain.user.UserMessageGift" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_message_gift
+        where 1 = 1
+        <if test="userId != null">
+            and user_id = #{userId,jdbcType=INTEGER}
+        </if>
+        <if test="state != null">
+            and state = #{state,jdbcType=INTEGER}
+        </if>
+        <if test="userMessageId != null">
+            and user_message_id = #{userMessageId,jdbcType=INTEGER}
+        </if>
+        <if test="transactionlink != null">
+            and transactionlink = #{transactionlink,jdbcType=VARCHAR}
+        </if>
+        <if test="orderId != null">
+            and orderId = #{orderId,jdbcType=VARCHAR}
+        </if>
+        <if test="st_time != null">
+            and (DATE_FORMAT(ut, '%Y-%m-%d') > DATE_FORMAT(#{st_time}, '%Y-%m-%d')|| DATE_FORMAT(#{st_time}, '%Y-%m-%d')
+            = DATE_FORMAT(ut, '%Y-%m-%d'))
+        </if>
+        <if test="ed_time != null">
+            and (DATE_FORMAT(#{ed_time}, '%Y-%m-%d') > DATE_FORMAT(ut, '%Y-%m-%d') || DATE_FORMAT(#{ed_time},
+            '%Y-%m-%d') = DATE_FORMAT(ut, '%Y-%m-%d'))
+        </if>
+        order by ct desc
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from user_message_gift
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.user.UserMessageGift">
+        update user_message_gift
+        <set>
+            <if test="userMessageId != null">
+                user_message_id = #{userMessageId,jdbcType=INTEGER},
+            </if>
+            <if test="giftProductId != null">
+                gift_product_id = #{giftProductId,jdbcType=INTEGER},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="money != null">
+                money = #{money,jdbcType=DECIMAL},
+            </if>
+            <if test="sellMoney != null">
+                sell_money = #{sellMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="zbkMoney != null">
+                zbk_money = #{zbkMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="img != null">
+                img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="ct != null">
+                ct = #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="gameName != null">
+                game_name = #{gameName,jdbcType=VARCHAR},
+            </if>
+            <if test="giftType != null">
+                gift_type = #{giftType,jdbcType=VARCHAR},
+            </if>
+            <if test="giftProductName != null">
+                gift_product_name = #{giftProductName,jdbcType=VARCHAR},
+            </if>
+            <if test="transactionlink != null">
+                transactionlink = #{transactionlink,jdbcType=VARCHAR},
+            </if>
+            <if test="orderId != null">
+                orderId = #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="zbkDate != null">
+                zbk_date = #{zbkDate,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.user.UserMessageGift">
+        update user_message_gift
+        set user_message_id   = #{userMessageId,jdbcType=INTEGER},
+            gift_product_id   = #{giftProductId,jdbcType=INTEGER},
+            state             = #{state,jdbcType=INTEGER},
+            money             = #{money,jdbcType=DECIMAL},
+            sell_money        = #{sellMoney,jdbcType=DECIMAL},
+            zbk_money         = #{zbkMoney,jdbcType=DECIMAL},
+            img               = #{img,jdbcType=VARCHAR},
+            user_id           = #{userId,jdbcType=INTEGER},
+            ct                = #{ct,jdbcType=TIMESTAMP},
+            phone             = #{phone,jdbcType=VARCHAR},
+            ut                = #{ut,jdbcType=TIMESTAMP},
+            game_name         = #{gameName,jdbcType=VARCHAR},
+            gift_type         = #{giftType,jdbcType=VARCHAR},
+            transactionlink   = #{transactionlink,jdbcType=VARCHAR},
+            gift_product_name = #{giftProductName,jdbcType=VARCHAR},
+            orderId           = #{orderId,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

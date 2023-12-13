@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csgo.mapper.BlindBoxProductMapper">
+
+
+    <select id="selectByGiftProductId" resultType="com.csgo.domain.BlindBoxProduct">
+        select *
+        from blind_box_product
+        where gift_product_id = #{giftProductId}
+          and blind_box_id = #{blindBoxId}
+    </select>
+
+    <delete id="deleteByBoxId">
+        DELETE
+        FROM blind_box_product
+        WHERE blind_box_id = #{blindBoxId}
+    </delete>
+
+    <update id="updateProbabilityBath">
+        update blind_box_product set probability = #{probability} where id in
+        <foreach collection="idList" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="updatePriceByGiftProductId">
+        update blind_box_product
+        set price = #{price}
+        where gift_product_id = #{giftProductId}
+    </update>
+</mapper>

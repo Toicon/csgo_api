@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.blind.BlindBoxRoomPlusMapper">
+
+    <select id="paginationHistory" parameterType="com.csgo.condition.blind.SearchBlindBoxRoomCondition" resultType="com.csgo.domain.plus.blind.BlindBoxRoomPlus">
+        select br.* from blind_box_room br
+        <where>
+            br.status = 2
+            <if test="condition.userId !=null">
+                and FIND_IN_SET(${condition.userId}, br.room_user_ids)
+            </if>
+        </where>
+        order by br.add_time desc
+    </select>
+
+    <select id="getBestBattlePointsInHistory" resultType="com.csgo.domain.plus.blind.BlindBoxRoomPlus">
+        SELECT *
+        FROM blind_box_room br WHERE br.status != 0 AND br.status != 3
+        AND FIND_IN_SET(#{userId},br.room_user_ids)
+        <if test="isToday != null">
+            AND DATE_FORMAT(start_time,'%Y-%m-%d') = DATE_FORMAT(NOW(),'%Y-%m-%d')
+        </if>
+        ORDER BY br.integral DESC LIMIT 1
+    </select>
+
+</mapper>

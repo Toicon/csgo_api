@@ -1,0 +1,87 @@
+server:
+  port: 7982
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/hy-local?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8
+    username: XXX
+    password: XXX
+    driver-class-name: com.mysql.jdbc.Driver
+    druid:
+      initial-size: 50
+      min-idle: 1
+      max-active: 200
+      test-on-borrow: true
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-While-Idle: true
+      test-on-return: false
+      pool-prepared-statements: false
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,slf4j,config
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 4
+    lettuce:
+      pool:
+        max-active: 200
+        max-idle: 10
+        min-idle: 0
+    timeout: 30000ms
+
+mq:
+  accessKey: XXXXX
+  secretKey: XXXXX
+  nameSrvAddr: http://XXXXX:80
+  signName: 公司
+  producer:
+    enable: true
+
+steam:
+  callback: https://XXX.com/front/steam
+  openIdUrl: http://steamcommunity.com/openid
+  apiUrl: http://api.steampowered.com
+  key: XXXXX
+  frontUrl: https://XXX.com
+
+ig:
+  partnerKey: XXXXX
+  publicKey: XXXXX
+  secretKey: XXXXX
+  apiUrl: https://www.openpla.com
+  appId: 730
+
+#阿里云安全信息认证
+green:
+  ali:
+    accessKey: XXXXX
+    secretKey: XXXXX
+
+#阿里支付
+ali:
+  pay:
+    appId: XXXXX
+    selfAppId: XXXXX
+    privateKey: XXXXX
+    selfPrivateKey: XXXXX
+    aliPayPublicKey: XXXXX
+    selfAliPayPublicKey: XXXXX
+    notifyUrl: https://XXXXX.com/front/pay/ali/notify
+    selfNotifyUrl: https://XXXXX.com/front/pay/ali/self/notify
+    returnUrl: https://XXX.com/
+    selfReturnUrl: https://XXX.com/
+    faceCallUrl: 'https://XXX.com/face/pay'
+    companyName: '*公司'
+    productName: '饰品购买'
+    realNameCallUrl: 'https://XXX.com/realName/auth'
+  app:
+    appId: XXXXX
+    privateKey: XXXXX
+    aliPublicKey: XXXXX
+    notifyUrl: https://XXX.com/front/pay/aliApp/notify
+
+
+baseExtensionUrl: 'https://XXX.com/invote/'

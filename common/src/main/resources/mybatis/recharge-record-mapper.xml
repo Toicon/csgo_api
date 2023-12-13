@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.user.RechargeRecordMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.user.SearchUserLuckyRecordCondition" resultType="com.csgo.domain.plus.user.RechargeRecordDTO">
+        select rr.*, u.user_name, u.flag, u.tag
+        from recharge_record rr
+        inner join user u on rr.user_id = u.id
+        where 1=1
+        <if test="condition.userName !=null and condition.userName !=''">
+            AND u.user_name like '%${condition.userName}%'
+        </if>
+        <if test="condition.flag != null">
+            AND #{condition.flag} = u.flag
+        </if>
+        <if test="condition.tag != null">
+            AND #{condition.tag} = u.tag
+        </if>
+        order by rr.ct desc
+    </select>
+</mapper>

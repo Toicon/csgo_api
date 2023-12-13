@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.ProductFilterCategoryMapper">
+
+
+    <resultMap id="baseMap" type="com.csgo.domain.ProductFilterCategoryDO">
+        <result property="addTime" column="add_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="parentKey" column="parent_key"/>
+        <result property="searchKey" column="search_key"/>
+        <result property="sortId" column="sort_id"/>
+    </resultMap>
+
+    <select id="selectProductFilterCategoryByKeyAndName" resultMap="baseMap">
+        select *
+        from sys_product_filter_category
+        where `key` = #{key}
+          and name = #{name}
+    </select>
+
+    <insert id="addBath" keyProperty="true" keyColumn="id">
+        insert into sys_product_filter_category
+        (`key`,name,search_key,parent_key,add_time,update_time,img_url,sort_id)
+        value
+        <foreach collection="list" item="item" separator=",">
+            (#{item.key},#{item.name},#{item.searchKey},#{item.parentKey},#{item.addTime},#{item.updateTime},#{item.imgUrl},#{item.sortId})
+        </foreach>
+    </insert>
+
+    <update id="updateCategory">
+        update sys_product_filter_category
+        <set>
+            <if test="key!=null and key!=''">
+                `key`=#{key},
+            </if>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="searchKey!=null and searchKey!=''">
+                search_key=#{searchKey},
+            </if>
+            <if test="parentKey!=null and parentKey!=''">
+                parent_key=#{parentKey},
+            </if>
+            <if test="addTime!=null">
+                add_time=#{addTime},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime},
+            </if>
+            <if test="imgUrl!=null and imgUrl!=''">
+                img_url=#{imgUrl},
+            </if>
+            <if test="sortId!=null">
+                sort_id=#{sortId},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <insert id="addCategory" keyProperty="true" keyColumn="id" parameterType="com.csgo.domain.ProductFilterCategoryDO">
+        insert into sys_product_filter_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="key!=null and key!=''">
+                `key`,
+            </if>
+            <if test="name!=null and name!=''">
+                name,
+            </if>
+            <if test="searchKey!=null and searchKey!=''">
+                search_key,
+            </if>
+            <if test="parentKey!=null and parentKey!=''">
+                parent_key,
+            </if>
+            <if test="addTime!=null">
+                add_time,
+            </if>
+            <if test="updateTime!=null">
+                update_time,
+            </if>
+            <if test="imgUrl!=null and imgUrl!=''">
+                img_url,
+            </if>
+            <if test="sortId!=null">
+                sort_id,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="key!=null and key!=''">
+                #{key},
+            </if>
+            <if test="name!=null and name!=''">
+                #{name},
+            </if>
+            <if test="searchKey!=null and searchKey!=''">
+                #{searchKey},
+            </if>
+            <if test="parentKey!=null and parentKey!=''">
+                #{parentKey},
+            </if>
+            <if test="addTime!=null">
+                #{addTime},
+            </if>
+            <if test="updateTime!=null">
+                #{updateTime},
+            </if>
+            <if test="imgUrl!=null and imgUrl!=''">
+                #{imgUrl},
+            </if>
+            <if test="sortId!=null">
+                #{sortId},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateBath">
+        <foreach collection="list" item="item" separator=";">
+            update sys_product_filter_category
+            <set>
+                `key`=#{item.key},`name`=#{item.name},search_key=#{item.searchKey},parent_key=#{item.parentKey},update_time=#{item.updateTime},img_url=#{item.imgUrl},sort_id=#{sortId}
+            </set>
+            where id=#{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectAdminCount" resultType="java.lang.Long">
+        select count(1) from sys_product_filter_category where parent_key='0'
+        <if test="keywords!=null and keywords!=''">
+            and name like concat('%',#{keywords},'%')
+        </if>
+    </select>
+
+    <select id="selectPageList" resultMap="baseMap">
+        select * from sys_product_filter_category where parent_key='0'
+        <if test="keywords!=null and keywords!=''">
+            and name like concat('%',#{keywords},'%')
+        </if>
+        order by sort_id desc, update_time desc
+    </select>
+
+    <delete id="deleteById">
+        delete
+        from sys_product_filter_category
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteBach">
+        delete from sys_product_filter_category
+        where id in
+        <foreach collection="ids" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="selectCountByKey" resultType="java.lang.Integer">
+        select count(1) from sys_product_filter_category where `key`=#{key}
+        <if test="id!=null">
+            and id <![CDATA[ <> ]]> #{id}
+        </if>
+    </select>
+
+    <select id="selectNameByCsgoType" resultType="java.lang.String">
+        select name
+        from sys_product_filter_category
+        where `search_key` = #{csgoType} limit 1
+    </select>
+
+    <select id="selectAllZbtProductFilters" resultMap="baseMap">
+        select *
+        from sys_product_filter_category
+        where parent_key = '0'
+        order by sort_id desc, update_time desc
+    </select>
+
+
+    <select id="getLuckyCategoryList" resultMap="baseMap">
+        SELECT *
+        FROM sys_product_filter_category
+        WHERE `key` IN (
+            SELECT gp.csgo_type
+            FROM sys_lucky_product lp
+                     INNER JOIN gift_product gp ON lp.gift_product_id = gp.id
+                     where gp.status='NORMAL'
+        )
+          AND parent_key = '0'
+    </select>
+
+
+    <select id="getCategoryListByParentKey" resultMap="baseMap">
+        SELECT *
+        FROM sys_product_filter_category
+        WHERE parent_key = #{parentKey}
+    </select>
+</mapper>

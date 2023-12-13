@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.ExchangeRateMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.ExchangeRate">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="exchange_rate" property="exchangeRate" jdbcType="VARCHAR"/>
+        <result column="ups_and_downs" property="upsAndDowns" jdbcType="VARCHAR"/>
+        <result column="flag" property="flag" jdbcType="INTEGER"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+        <result column="extract_money" property="extractMoney" jdbcType="DECIMAL"/>
+        <result column="pay_give_money" property="pay_give_money" jdbcType="DECIMAL"/>
+        <result column="spill_price" property="spill_price" jdbcType="DECIMAL"/>
+        <result column="first_commission" property="firstCommission" jdbcType="DECIMAL"/>
+        <result column="second_commission" property="secondCommission" jdbcType="DECIMAL"/>
+        <result column="lucky_value" property="luckyValue" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , exchange_rate, flag, ct, ut,extract_money,ups_and_downs,pay_give_money,spill_price,first_commission,second_commission,lucky_value
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from exchange_rate
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <select id="queryAll" resultMap="BaseResultMap">
+        select *
+        from exchange_rate
+        order by ct desc
+    </select>
+
+    <select id="getList" parameterType="com.csgo.domain.ExchangeRate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from exchange_rate
+        <where>
+            1=1
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="flag != null">
+                and flag = #{flag,jdbcType=INTEGER}
+            </if>
+            <if test="exchangeRate != null">
+                and exchange_rate = #{exchangeRate,jdbcType=VARCHAR}
+            </if>
+            <if test="upsAndDowns != null">
+                and ups_and_downs = #{upsAndDowns,jdbcType=VARCHAR}
+            </if>
+            <if test="extractMoney != null">
+                and extract_money = #{extractMoney,jdbcType=DECIMAL}
+            </if>
+            <if test="pay_give_money != null">
+                and pay_give_money = #{pay_give_money,jdbcType=DECIMAL}
+            </if>
+            <if test="spill_price != null">
+                and spill_price = #{spill_price,jdbcType=DECIMAL}
+            </if>
+        </where>
+        order by ct desc
+    </select>
+
+
+    <select id="queryAllLimit" parameterType="com.csgo.domain.ExchangeRate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from exchange_rate
+        order by ct desc
+        limit #{pageNum},#{pageSize}
+    </select>
+
+
+    <select id="getById" parameterType="com.csgo.domain.ExchangeRate" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from exchange_rate where id = #{id}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from exchange_rate
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.ExchangeRate">
+        insert into exchange_rate (id, exchange_rate, flag,
+                                   ct, ut, extract_money, ups_and_downs, pay_give_money, spill_price)
+        values (#{id,jdbcType=INTEGER}, #{exchangeRate,jdbcType=VARCHAR}, #{flag,jdbcType=INTEGER},
+                #{ct,jdbcType=TIMESTAMP}, #{ut,jdbcType=TIMESTAMP}, #{extractMoney,jdbcType=DECIMAL}, #{upsAndDowns,jdbcType=VARCHAR},
+                #{pay_give_money,jdbcType=DECIMAL}, #{spill_price,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.ExchangeRate">
+        insert into exchange_rate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="exchangeRate != null">
+                exchange_rate,
+            </if>
+            <if test="flag != null">
+                flag,
+            </if>
+            <if test="ct != null">
+                ct,
+            </if>
+            <if test="ut != null">
+                ut,
+            </if>
+            <if test="extractMoney != null">
+                extract_money,
+            </if>
+            <if test="upsAndDowns != null">
+                ups_and_downs,
+            </if>
+            <if test="pay_give_money != null">
+                pay_give_money,
+            </if>
+            <if test="spill_price != null">
+                spill_price,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="exchangeRate != null">
+                #{exchangeRate,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                #{flag,jdbcType=INTEGER},
+            </if>
+            <if test="ct != null">
+                #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="extractMoney != null">
+                #{extractMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="upsAndDowns != null">
+                #{upsAndDowns,jdbcType=VARCHAR},
+            </if>
+            <if test="pay_give_money != null">
+                #{pay_give_money,jdbcType=DECIMAL},
+            </if>
+            <if test="spill_price != null">
+                #{spill_price,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.ExchangeRate">
+        update exchange_rate
+        <set>
+            <if test="exchangeRate != null">
+                exchange_rate = #{exchangeRate,jdbcType=VARCHAR},
+            </if>
+            <if test="flag != null">
+                flag = #{flag,jdbcType=INTEGER},
+            </if>
+            <if test="ct != null">
+                ct = #{ct,jdbcType=TIMESTAMP},
+            </if>
+            <if test="ut != null">
+                ut = #{ut,jdbcType=TIMESTAMP},
+            </if>
+            <if test="extractMoney != null">
+                extract_money=#{extractMoney,jdbcType=DECIMAL},
+            </if>
+            <if test="upsAndDowns != null">
+                ups_and_downs = #{upsAndDowns,jdbcType=VARCHAR},
+            </if>
+            <if test="pay_give_money != null">
+                pay_give_money = #{pay_give_money,jdbcType=DECIMAL},
+            </if>
+            <if test="spill_price != null">
+                spill_price = #{spill_price,jdbcType=DECIMAL},
+            </if>
+            <if test="firstCommission != null">
+                first_commission = #{firstCommission,jdbcType=DECIMAL},
+            </if>
+            <if test="secondCommission != null">
+                second_commission = #{secondCommission,jdbcType=DECIMAL},
+            </if>
+            <if test="luckyValue != null">
+                lucky_value = #{luckyValue,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.ExchangeRate">
+        update exchange_rate
+        set exchange_rate     = #{exchangeRate,jdbcType=VARCHAR},
+            flag              = #{flag,jdbcType=INTEGER},
+            ct                = #{ct,jdbcType=TIMESTAMP},
+            ut                = #{ut,jdbcType=TIMESTAMP},
+            ups_and_downs     = #{upsAndDowns,jdbcType=VARCHAR},
+            extract_money=#{extractMoney,jdbcType=DECIMAL},
+            pay_give_money    = #{pay_give_money,jdbcType=DECIMAL},
+            first_commission  = #{firstCommission,jdbcType=DECIMAL},
+            second_commission = #{secondCommission,jdbcType=DECIMAL},
+            lucky_value       = #{luckyValue,jdbcType=INTEGER},
+            spill_price       = #{spill_price,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csgo.mapper.LuckyProductMapper">
+
+    <resultMap id="baseMap" type="com.csgo.domain.LuckyProductDO">
+        <result property="sortId" column="sort_id"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="addTime" column="add_time"/>
+        <result property="imgUrl" column="img_url"/>
+        <result property="price" column="price"/>
+        <result property="giftProductId" column="gift_product_id"/>
+        <result property="isRecommend" column="is_recommend"/>
+    </resultMap>
+
+    <resultMap id="BaseResultMap" type="com.csgo.domain.GiftProduct">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+        <result column="gift_id" property="giftId" jdbcType="INTEGER"/>
+        <result column="within_probability" property="withinProbability" jdbcType="VARCHAR"/>
+        <result column="out_probability" property="outProbability" jdbcType="VARCHAR"/>
+        <result column="game_name" property="gameName" jdbcType="VARCHAR"/>
+        <result column="isdefault" property="isdefault" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="VARCHAR"/>
+        <result column="englishName" property="englishName" jdbcType="VARCHAR"/>
+        <result column="itemId" property="itemId" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <select id="selectByGiftProductId" resultMap="baseMap">
+        select *
+        from sys_lucky_product lp
+         INNER JOIN gift_product g ON lp.gift_product_id = g.id
+        where lp.gift_product_id = #{id} and g.status='NORMAL'
+    </select>
+
+    <update id="updatePriceByGiftProductId">
+        update sys_lucky_product
+        set price = #{price}
+        where gift_product_id = #{giftProductId}
+    </update>
+
+</mapper>

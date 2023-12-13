@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.envelop.RedEnvelopRecordMapper">
+
+    <select id="findReceive" resultType="com.csgo.domain.plus.envelop.RedEnvelopRecord">
+        SELECT rr.* FROM red_envelop_record rr
+        INNER JOIN red_envelop_item ri ON ri.id = rr.envelop_item_id
+        WHERE rr.user_id=#{userId} and ri.envelop_id=#{envelopId} and rr.create_date <![CDATA[ >= ]]> #{startTime}
+    </select>
+
+    <select id="getSumAmount" resultType="java.math.BigDecimal">
+        SELECT IFNULL(sum(amount), 0) FROM red_envelop_record t
+        <where>
+            t.user_id=#{userId}
+        </where>
+    </select>
+
+</mapper>

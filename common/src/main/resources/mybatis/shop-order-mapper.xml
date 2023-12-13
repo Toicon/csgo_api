@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.plus.shop.ShopOrderMapper">
+
+    <select id="pagination" parameterType="com.csgo.condition.shop.SearchShopOrderCondition" resultType="com.csgo.domain.plus.shop.ShopOrderDTO">
+        SELECT u.`user_name`,u.`name`,g.`name` AS gift_product_name,g.`price`,so.`ct`,so.`before_balance`,so.`after_balance` FROM shop_order so
+        INNER JOIN `user` u ON u.`id`=so.`user_id`
+        INNER JOIN shop s ON s.`gift_product_id`=so.`gift_product_id`
+        INNER JOIN gift_product g ON g.`id`=so.`gift_product_id`
+        <where>
+            s.`status`='NORMAL'
+            <if test="condition.startDate!=null">
+                and so.ct <![CDATA[ >= ]]> #{condition.startDate}
+            </if>
+            <if test="condition.endDate != null ">
+                and so.ct  <![CDATA[ <= ]]> #{condition.endDate}
+            </if>
+            <if test="condition.giftProductId!=null">
+                and so.`gift_product_id`=#{condition.giftProductId}
+            </if>
+        </where>
+        order by so.ct desc
+    </select>
+</mapper>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.csgo.mapper.GiftGradeMapper">
+    <resultMap id="BaseResultMap" type="com.csgo.domain.GiftGrade">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="img" property="img" jdbcType="VARCHAR"/>
+        <result column="grade" property="grade" jdbcType="VARCHAR"/>
+        <result column="ct" property="ct" jdbcType="TIMESTAMP"/>
+        <result column="ut" property="ut" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , img, grade, ct, ut
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from gift_grade
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from gift_grade
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.csgo.domain.GiftGrade">
+        insert into gift_grade (id, img, grade, ct, ut)
+        values (#{id,jdbcType=INTEGER}, #{img,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR}, #{ct,jdbcType=TIMESTAMP}, #{ut,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.csgo.domain.GiftGrade">
+        insert into gift_grade
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="img != null">
+                img,
+            </if>
+            <if test="grade != null">
+                grade,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="img != null">
+                #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                #{grade,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.csgo.domain.GiftGrade">
+        update gift_grade
+        <set>
+            <if test="img != null">
+                img = #{img,jdbcType=VARCHAR},
+            </if>
+            <if test="grade != null">
+                grade = #{grade,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.csgo.domain.GiftGrade">
+        update gift_grade
+        set img   = #{img,jdbcType=VARCHAR},
+            grade = #{grade,jdbcType=VARCHAR},
+            ct    = #{ct,jdbcType=TIMESTAMP},
+            ut    = #{ut,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectOne" parameterType="com.csgo.domain.GiftGrade" resultMap="BaseResultMap">
+        select * from gift_grade
+        <where>
+            1=1
+            <if test="img != null">
+                and img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="grade != null">
+                and grade = #{grade,jdbcType=VARCHAR}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        order by ct desc limit 0,1
+    </select>
+
+    <select id="selectList" parameterType="com.csgo.domain.GiftGrade" resultMap="BaseResultMap">
+        select * from gift_grade
+        <where>
+            1=1
+            <if test="img != null">
+                and img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="grade != null">
+                and grade = #{grade,jdbcType=VARCHAR}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        order by ct desc
+    </select>
+
+    <select id="selectListLt" parameterType="com.csgo.domain.GiftGrade" resultMap="BaseResultMap">
+        select * from gift_grade
+        <where>
+            1=1
+            <if test="img != null">
+                and img = #{img,jdbcType=VARCHAR}
+            </if>
+            <if test="grade != null">
+                and grade = #{grade,jdbcType=VARCHAR}
+            </if>
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="ct != null">
+                and ct = #{ct,jdbcType=TIMESTAMP}
+            </if>
+            <if test="ut != null">
+                and ut = #{ut,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+        order by ct desc
+        limit #{pageNum},#{pageSize}
+    </select>
+
+</mapper>
